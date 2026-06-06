@@ -148,7 +148,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Abrir Novo Chamado</h3>
-        <button class="modal-close" onclick="closeModal('createModal')">
+        <button class="modal-close" onclick="closeModalConfirm('createModal')">
           <i class="ri-close-line"></i>
         </button>
       </div>
@@ -157,8 +157,14 @@
           <div id="modalAlert" class="alert alert-danger" style="display: none;"></div>
           
           <div class="form-group">
-            <label class="form-label" for="ticketTitle">Assunto / Título</label>
-            <input class="form-input no-icon" type="text" id="ticketTitle" placeholder="Ex: Monitor piscando, Falha na VPN..." required>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" for="ticketTitle" style="margin: 0;">Assunto / Título</label>
+              <span class="char-counter" id="titleCharCount" style="font-size: 0.7rem; color: var(--text-muted);">0 / 150</span>
+            </div>
+            <input class="form-input no-icon" type="text" id="ticketTitle" placeholder="Ex: Monitor piscando, Falha na VPN..." maxlength="150" oninput="validateFormOnInput()" required>
+            <span class="field-error-msg" id="titleError" style="display: none; color: var(--color-danger); font-size: 0.72rem; margin-top: 4px;">
+              <i class="ri-error-warning-line"></i> O título é obrigatório (mínimo 5 caracteres).
+            </span>
           </div>
 
           <div class="form-row">
@@ -185,18 +191,24 @@
             <label class="form-label" for="ticketAssignee">Atribuir Técnico (Opcional)</label>
             <select class="form-input no-icon" id="ticketAssignee">
               <option value="">Não atribuído</option>
-              <!-- Populated in JS (Nielsen Heuristic #6) -->
+              <!-- Populated in JS -->
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="ticketDesc">Descrição Detalhada do Problema</label>
-            <textarea class="form-input no-icon" id="ticketDesc" placeholder="Explique em detalhes o que está acontecendo e descreva os passos para reproduzir o erro..." required></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" for="ticketDesc" style="margin: 0;">Descrição Detalhada do Problema</label>
+              <span class="char-counter" id="descCharCount" style="font-size: 0.7rem; color: var(--text-muted);">0 / 1000</span>
+            </div>
+            <textarea class="form-input no-icon" id="ticketDesc" placeholder="Explique em detalhes o que está acontecendo e descreva os passos para reproduzir..." maxlength="1000" oninput="validateFormOnInput()" required></textarea>
+            <span class="field-error-msg" id="descError" style="display: none; color: var(--color-danger); font-size: 0.72rem; margin-top: 4px;">
+              <i class="ri-error-warning-line"></i> A descrição é obrigatória (mínimo 10 caracteres).
+            </span>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" onclick="closeModal('createModal')">Cancelar</button>
-          <button class="btn btn-success" type="submit" id="btnSubmitTicket">Criar Chamado</button>
+          <button class="btn btn-secondary" type="button" onclick="closeModalConfirm('createModal')">Cancelar Abertura</button>
+          <button class="btn btn-success" type="submit" id="btnSubmitTicket" disabled>Confirmar Abertura</button>
         </div>
       </form>
     </div>

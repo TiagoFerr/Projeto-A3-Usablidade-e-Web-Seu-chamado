@@ -342,10 +342,14 @@ async function handleDrop(e) {
 }
 
 // ==========================================
-// MODALS MANAGEMENT
+// MODALS MANAGEMENT & USABILITY VALIDATION
 // ==========================================
 function openModal(modalId) {
   document.getElementById(modalId).classList.add('active');
+  if (modalId === 'createModal') {
+    validateFormOnInput();
+    setupValidationBlurListeners();
+  }
 }
 
 function closeModal(modalId) {
@@ -353,11 +357,108 @@ function closeModal(modalId) {
   if (modalId === 'createModal') {
     document.getElementById('createTicketForm').reset();
     clearAlert('modalAlert');
+    resetFormValidation();
   }
+}
+
+function closeModalConfirm(modalId) {
+  if (modalId === 'createModal') {
+    const title = document.getElementById('ticketTitle').value.trim();
+    const desc = document.getElementById('ticketDesc').value.trim();
+    if (title || desc) {
+      const discard = confirm('Você começou a preencher o chamado. Tem certeza de que deseja descartar este rascunho? O conteúdo digitado será perdido.');
+      if (!discard) return;
+    }
+  }
+  closeModal(modalId);
 }
 
 function openCreateModal() {
   openModal('createModal');
+}
+
+// Live Validation (Heuristic #5 Error Prevention & Heuristic #9 Recovery)
+function validateFormOnInput() {
+  const titleInput = document.getElementById('ticketTitle');
+  const descInput = document.getElementById('ticketDesc');
+  const btnSubmit = document.getElementById('btnSubmitTicket');
+
+  if (!titleInput || !descInput || !btnSubmit) return;
+
+  const title = titleInput.value;
+  const desc = descInput.value;
+
+  // Update Counters
+  document.getElementById('titleCharCount').innerText = `${title.length} / 150`;
+  document.getElementById('descCharCount').innerText = `${desc.length} / 1000`;
+
+  // Validation logic
+  const isTitleValid = title.trim().length >= 5;
+  const isDescValid = desc.trim().length >= 10;
+
+  // Enable/Disable Confirm button based on validation status
+  btnSubmit.disabled = !(isTitleValid && isDescValid);
+
+  // Dynamically hide errors if they correct it
+  if (isTitleValid) {
+    titleInput.classList.remove('input-error');
+    document.getElementById('titleError').style.display = 'none';
+  }
+  if (isDescValid) {
+    descInput.classList.remove('input-error');
+    document.getElementById('descError').style.display = 'none';
+  }
+}
+
+// Setup Blur events so validation errors only show when tabbed out (prevents early warnings)
+function setupValidationBlurListeners() {
+  const titleInput = document.getElementById('ticketTitle');
+  const descInput = document.getElementById('ticketDesc');
+
+  if (!titleInput || !descInput) return;
+
+  // Use distinct named functions to avoid duplicate listeners on reopen
+  if (!titleInput.dataset.hasBlurListener) {
+    titleInput.addEventListener('blur', () => {
+      const isTitleValid = titleInput.value.trim().length >= 5;
+      if (!isTitleValid && titleInput.value.length > 0) {
+        titleInput.classList.add('input-error');
+        document.getElementById('titleError').style.display = 'block';
+      }
+    });
+    titleInput.dataset.hasBlurListener = 'true';
+  }
+
+  if (!descInput.dataset.hasBlurListener) {
+    descInput.addEventListener('blur', () => {
+      const isDescValid = descInput.value.trim().length >= 10;
+      if (!isDescValid && descInput.value.length > 0) {
+        descInput.classList.add('input-error');
+        document.getElementById('descError').style.display = 'block';
+      }
+    });
+    descInput.dataset.hasBlurListener = 'true';
+  }
+}
+
+function resetFormValidation() {
+  const titleInput = document.getElementById('ticketTitle');
+  const descInput = document.getElementById('ticketDesc');
+  
+  if (titleInput) titleInput.classList.remove('input-error');
+  if (descInput) descInput.classList.remove('input-error');
+  
+  const titleErr = document.getElementById('titleError');
+  const descErr = document.getElementById('descError');
+  
+  if (titleErr) titleErr.style.display = 'none';
+  if (descErr) descErr.style.display = 'none';
+  
+  const titleCnt = document.getElementById('titleCharCount');
+  const descCnt = document.getElementById('descCharCount');
+  
+  if (titleCnt) titleCnt.innerText = '0 / 150';
+  if (descCnt) descCnt.innerText = '0 / 1000';
 }
 
 // Create Ticket submit handler

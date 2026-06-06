@@ -234,6 +234,15 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 0 3px var(--color-primary-glow);
 }
 
+.form-input.input-error {
+  border-color: var(--color-danger);
+}
+
+.form-input.input-error:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.15);
+}
+
 /* Select element */
 select.form-input {
   appearance: none;
