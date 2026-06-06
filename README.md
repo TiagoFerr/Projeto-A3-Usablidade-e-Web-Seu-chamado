@@ -79,7 +79,10 @@ O frontend foi desenvolvido com foco absoluto na aplicação das heurísticas de
 
 ### 5. Prevenção de Erros
 * **Submit Lock:** O botão de envio do chamado permanece desabilitado (`disabled`) com opacidade reduzida até que o formulário atenda às restrições mínimas (Título com mais de 5 caracteres e Descrição com mais de 10 caracteres). Isso impede que chamados em branco ou sem nexo sejam enviados acidentalmente.
-* **Aviso de Perda de Rascunho:** Se o usuário preencher o formulário e clicar no botão de fechar (`X`), no botão "Cancelar" ou fora da janela, o sistema intercepta a ação e exibe uma caixa de diálogo: *"Você começou a preencher o chamado. Tem certeza de que deseja descartar este rascunho?"*, prevenindo a perda involuntária de digitação.
+* **Aviso de Perda de Rascunho:** Se o usuário preencher o formulário e tentar fechar a janela (clicando no Cancelar, no fechar `X` ou fora do modal), o sistema intercepta a ação e exibe uma confirmação: *"Você começou a preencher o chamado. Tem certeza de que deseja descartar este rascunho? O conteúdo digitado será perdido."*, prevenindo a perda involuntária de digitação.
+* **Confirmação de Ações Críticas (Exclusão e Encerramento):** Para evitar cliques acidentais (*missclicks*):
+  * **Exclusão de Chamado:** Solicita confirmação explícita (*"Tem certeza de que deseja excluir permanentemente este chamado?"*).
+  * **Sair da Conta (Logout):** Solicita confirmação antes de deslogar o usuário (*"Tem certeza de que deseja sair da sua conta?"*).
 
 ### 6. Reconhecimento em Vez de Memorização
 * **Dropdown de Atribuição:** A lista de técnicos de TI cadastrados é populada em tempo real no banco e exibida em um seletor visual. O usuário técnico escolhe o responsável a partir de uma lista estruturada em vez de ter que memorizar e digitar o nome ou e-mail de cabeça.

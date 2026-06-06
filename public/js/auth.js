@@ -158,6 +158,8 @@ async function handleRegister(event) {
 
 // Encerramento de sessão (Logout)
 async function handleLogout() {
+  const confirmLogout = confirm('Tem certeza de que deseja sair da sua conta?');
+  if (!confirmLogout) return;
   try {
     await fetch(`${AUTH_API}/logout`, { method: 'POST' });
     window.location.href = '/index.html';
