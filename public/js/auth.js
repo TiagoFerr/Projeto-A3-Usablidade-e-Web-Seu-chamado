@@ -204,3 +204,38 @@ if (window.location.pathname.includes('dashboard.html')) {
     checkAuth();
   });
 }
+
+// Sistema de Notificações flutuantes (Toast)
+function showToast(message, type = 'success') {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+
+  let iconClass = 'ri-checkbox-circle-line';
+  if (type === 'warning') iconClass = 'ri-alert-line';
+  if (type === 'danger') iconClass = 'ri-error-warning-line';
+  if (type === 'info') iconClass = 'ri-information-line';
+
+  toast.innerHTML = `
+    <i class="${iconClass}"></i>
+    <span class="toast-message">${message}</span>
+    <button class="toast-close" onclick="this.parentElement.remove()">
+      <i class="ri-close-line"></i>
+    </button>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.remove();
+    }
+  }, 4000);
+}

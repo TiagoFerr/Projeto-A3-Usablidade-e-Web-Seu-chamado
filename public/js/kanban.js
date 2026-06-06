@@ -328,8 +328,10 @@ async function handleDrop(e) {
       if (!response.ok) {
         throw new Error('Falha ao atualizar status.');
       }
+      showToast('Status do chamado atualizado com sucesso!', 'success');
     } catch (err) {
       console.error(err);
+      showToast('Erro ao atualizar status do chamado.', 'danger');
       // Revert if API fails
       ticket.status = oldStatus;
       renderBoard();
@@ -487,7 +489,7 @@ async function handleCreateTicket(event) {
     }
 
     closeModal('createModal');
-    // Refresh tickets list
+    showToast('Chamado criado com sucesso!', 'success');
     await loadTickets();
 
   } catch (err) {
@@ -614,8 +616,10 @@ async function handleAssigneeChange(event) {
     if (!response.ok) {
       throw new Error('Falha ao atualizar responsável.');
     }
+    showToast('Responsável atualizado com sucesso!', 'success');
   } catch (err) {
     console.error(err);
+    showToast('Erro ao atualizar responsável.', 'danger');
     // Revert on failure
     ticket.assigned_to = originalAssignee;
     const oldUserObj = allUsers.find(u => u.id == originalAssignee);
@@ -656,8 +660,10 @@ async function handleStatusChange(event) {
     if (!response.ok) {
       throw new Error('Falha ao atualizar status.');
     }
+    showToast('Status do chamado atualizado com sucesso!', 'success');
   } catch (err) {
     console.error(err);
+    showToast('Erro ao atualizar status do chamado.', 'danger');
     // Revert
     ticket.status = originalStatus;
     renderBoard();
@@ -687,10 +693,11 @@ async function handleDeleteTicket() {
     }
 
     closeModal('detailsModal');
+    showToast('Chamado excluído com sucesso!', 'success');
     await loadTickets();
 
   } catch (err) {
-    alert(err.message);
+    showToast(err.message, 'danger');
     btnDelete.disabled = false;
     btnDelete.innerHTML = '<i class="ri-delete-bin-line"></i> Excluir Chamado';
   }
