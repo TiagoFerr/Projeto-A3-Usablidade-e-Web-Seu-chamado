@@ -1,5 +1,6 @@
 
 
+// Configurações gerais de API e estado da aplicação
 const TICKETS_API = '/api/tickets';
 const USERS_API = '/api/users';
 
@@ -8,7 +9,7 @@ let allTickets = [];
 let allUsers = [];
 let activeDragCard = null;
 
-
+// Mapeamento dos contêineres e colunas do Kanban no DOM
 const kanbanContainers = {
   todo: document.getElementById('container-todo'),
   in_progress: document.getElementById('container-in_progress'),
@@ -23,7 +24,7 @@ const columnCounts = {
   done: document.getElementById('count-done')
 };
 
-
+// Inicialização do painel e carregamento das permissões de usuário
 document.addEventListener('DOMContentLoaded', async () => {
   currentUser = await checkAuth();
   if (!currentUser) return; 
@@ -64,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
+// Funções utilitárias auxiliares
 function getInitials(name) {
   if (!name) return 'U';
   const parts = name.trim().split(' ');
@@ -71,7 +73,7 @@ function getInitials(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-
+// Carregamento de dados do Servidor (API)
 async function loadUsers() {
   try {
     const response = await fetch(USERS_API);
@@ -83,7 +85,6 @@ async function loadUsers() {
     console.error('Error loading users:', err);
   }
 }
-
 
 function populateUserDropdowns() {
   const createAssigneeSelect = document.getElementById('ticketAssignee');
@@ -102,7 +103,6 @@ function populateUserDropdowns() {
   });
 }
 
-
 async function loadTickets() {
   try {
     const response = await fetch(TICKETS_API);
@@ -117,7 +117,7 @@ async function loadTickets() {
   }
 }
 
-
+// Renderização do Quadro Kanban e filtros de pesquisa
 function renderBoard() {
   
   Object.keys(kanbanContainers).forEach(status => {
@@ -167,6 +167,7 @@ function renderBoard() {
 }
 
 
+// Construção do elemento HTML de cada cartão de chamado
 function createTicketCard(ticket) {
   const isTech = currentUser.role === 'tech';
   const card = document.createElement('div');
@@ -252,14 +253,12 @@ function formatDate(dateString) {
   return `${day}/${month}`;
 }
 
-// Filters implementation
+// Aplicação dos filtros de busca do painel
 function applyFilters() {
   renderBoard();
 }
 
-// ==========================================
-// HTML5 DRAG & DROP EVENT HANDLERS (TECHS)
-// ==========================================
+// Controle e manipulação de Arrastar e Soltar (Drag and Drop)
 function handleDragStart(e) {
   activeDragCard = this;
   this.classList.add('dragging');
@@ -338,9 +337,7 @@ async function handleDrop(e) {
   }
 }
 
-// ==========================================
-// MODALS MANAGEMENT & USABILITY VALIDATION
-// ==========================================
+// Gerenciamento de modais e validação de formulários
 function openModal(modalId) {
   document.getElementById(modalId).classList.add('active');
   if (modalId === 'createModal') {
@@ -374,7 +371,7 @@ function openCreateModal() {
   openModal('createModal');
 }
 
-// Live Validation (Heuristic #5 Error Prevention & Heuristic #9 Recovery)
+// Validação em tempo real do formulário (Prevenção de erros e recuperação)
 function validateFormOnInput() {
   const titleInput = document.getElementById('ticketTitle');
   const descInput = document.getElementById('ticketDesc');
@@ -501,9 +498,7 @@ async function handleCreateTicket(event) {
   }
 }
 
-// ==========================================
-// TICKET DETAILS MODAL (VIEW / EDIT / DELETE)
-// ==========================================
+// Detalhes do chamado (Visualização, alteração de status/atribuição e exclusão)
 let activeDetailsTicketId = null;
 
 function openDetailsModal(ticket) {

@@ -1,6 +1,8 @@
+// Configuração do banco de dados e imports
 const { Pool } = require('pg');
 require('dotenv').config();
 
+// Inicialização da pool de conexões
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
@@ -11,6 +13,7 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
+// Função para inicializar e migrar o banco de dados
 async function initDatabase() {
   let retries = 6;
   let client;
@@ -97,6 +100,7 @@ async function initDatabase() {
   }
 }
 
+// Exportação do módulo
 module.exports = {
   query,
   pool,

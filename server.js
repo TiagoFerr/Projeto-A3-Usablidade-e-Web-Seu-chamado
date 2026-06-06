@@ -1,3 +1,4 @@
+// Importações e configurações gerais do servidor
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
@@ -10,11 +11,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_development';
 
+// Configuração de middlewares globais
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware para verificação de token de acesso (JWT)
 const authenticateToken = (req, res, next) => {
   const token = req.cookies.token;
   
@@ -32,6 +35,7 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
+// Rotas de Autenticação e Usuários
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { name, email, role, password } = req.body;
@@ -133,6 +137,7 @@ app.get('/api/users', authenticateToken, async (req, res) => {
   }
 });
 
+// Rotas para gerenciamento de chamados (Tickets)
 app.get('/api/tickets', authenticateToken, async (req, res) => {
   try {
     const result = await db.query(`
@@ -271,6 +276,7 @@ app.delete('/api/tickets/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// Rotas para servir páginas estáticas do frontend
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -279,6 +285,7 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
+// Inicialização do banco de dados e início do servidor
 db.initDatabase().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running and listening on port ${PORT}`);

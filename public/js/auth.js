@@ -1,8 +1,9 @@
 
 
+// Configurações da API de Autenticação
 const AUTH_API = '/api/auth';
 
-
+// Funções para exibição de alertas e mensagens
 function showAlert(boxId, message, type = 'danger') {
   const alertBox = document.getElementById(boxId);
   if (!alertBox) return;
@@ -29,7 +30,7 @@ function clearAlert(boxId) {
   }
 }
 
-
+// Controle de alternância de abas (Login / Cadastro)
 function switchTab(mode) {
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
@@ -68,6 +69,7 @@ function toggleAuthMode() {
 }
 
 
+// Processamento de envio de formulários (Login / Cadastro)
 async function handleLogin(event) {
   event.preventDefault();
   clearAlert('alertBox');
@@ -154,6 +156,7 @@ async function handleRegister(event) {
 }
 
 
+// Encerramento de sessão (Logout)
 async function handleLogout() {
   try {
     await fetch(`${AUTH_API}/logout`, { method: 'POST' });
@@ -164,7 +167,7 @@ async function handleLogout() {
   }
 }
 
-
+// Verificação de sessão ativa e controle de acesso de rota
 async function checkAuth() {
   const currentPath = window.location.pathname;
 
@@ -193,7 +196,7 @@ async function checkAuth() {
   return null;
 }
 
-
+// Execução da validação de autenticação ao carregar a página
 if (window.location.pathname.includes('dashboard.html')) {
   document.addEventListener('DOMContentLoaded', () => {
     checkAuth();

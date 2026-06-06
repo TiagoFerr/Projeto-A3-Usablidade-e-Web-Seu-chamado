@@ -2,6 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
 
+/* Variáveis de estilo globais (Design System) */
 :root {
   
   --color-primary: #2563eb;
@@ -51,6 +52,7 @@
 }
 
 
+/* Reset e estilos básicos do documento */
 * {
   margin: 0;
   padding: 0;
@@ -98,6 +100,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+/* Estilos da tela de autenticação (Login / Cadastro) */
 .auth-page {
   display: flex;
   align-items: center;
@@ -361,6 +364,7 @@ select.form-input {
 
 
 
+/* Estrutura do Painel Geral (Dashboard) */
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
@@ -547,6 +551,7 @@ header {
 }
 
 
+/* Quadro Kanban e Colunas */
 .kanban-board {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -637,6 +642,7 @@ header {
 }
 
 
+/* Cartões de Chamados (Cards) */
 .ticket-card {
   background: var(--color-neutral-surface);
   border: 1px solid var(--color-neutral-border);
@@ -797,6 +803,7 @@ header {
 
 
 
+/* Janelas Modais (Criação e Detalhes de Chamados) */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -945,6 +952,7 @@ textarea.form-input {
 }
 
 
+/* Animações e Transições CSS */
 @keyframes fadeIn {
   from {
     opacity: 0;
