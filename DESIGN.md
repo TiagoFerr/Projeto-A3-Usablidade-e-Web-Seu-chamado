@@ -1,18 +1,18 @@
 ---
 name: Seu Chamado
-description: Sistema de chamados de TI no formato Kanban corporativo
+description: Sistema corporativo de chamados de TI com foco em usabilidade (IHC)
 colors:
-  primary: "#6366f1"
-  neutral-bg: "#090d16"
-  neutral-surface: "#0f1626"
-  neutral-border: "#1e293b"
-  success: "#10b981"
-  warning: "#f59e0b"
-  danger: "#f43f5e"
+  primary: "#2563eb"
+  neutral-bg: "#f8fafc"
+  neutral-surface: "#ffffff"
+  neutral-border: "#cbd5e1"
+  success: "#065f46"
+  warning: "#9a3412"
+  danger: "#991b1b"
 typography:
   display:
     fontFamily: "Outfit, Inter, sans-serif"
-    fontSize: "2rem"
+    fontSize: "1.8rem"
     fontWeight: 700
     lineHeight: 1.2
   body:
@@ -21,9 +21,9 @@ typography:
     fontWeight: 400
     lineHeight: 1.5
 rounded:
-  sm: "8px"
-  md: "14px"
-  lg: "20px"
+  sm: "6px"
+  md: "8px"
+  lg: "12px"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -31,86 +31,84 @@ spacing:
   lg: "24px"
 ---
 
-<!-- SEED: re-run /impeccable document once code files are finalized to sync changes. -->
-
-# Design System: Seu Chamado
+# Design System: Seu Chamado (Corporate Light Mode)
 
 ## 1. Overview
 
-**Creative North Star: "The Clean Operations Board"**
+**Creative North Star: "The Solid Support Desk"**
 
-O design do "Seu Chamado" segue uma linha corporativa sóbria, inspirada nas interfaces funcionais do GitHub e Notion, implementadas sobre um tema escuro (Dark Mode) de alto contraste. Cada elemento visual é projetado em torno das **10 Heurísticas de Usabilidade de Jakob Nielsen**, focando no feedback instantâneo de ações e no baixo esforço cognitivo para o gerenciamento de chamados.
+O design visual do "Seu Chamado" rejeita o visual "futurista de IA" (como temas dark com degradês de neon e transparências excessivas). Ele adota um **Tema Claro Corporativo e Sóbrio**, inspirado nos padrões visuais do **GitHub** e **TailwindUI**. O objetivo central é destacar a aplicação das **10 Heurísticas de Usabilidade de Jakob Nielsen** e garantir o maior **Contraste de Acessibilidade (WCAG)** possível.
 
 **Key Characteristics:**
-- **Feedback de Status Imediato:** Colunas do Kanban atualizam dinamicamente a contagem e mudam de cor discretamente durante interações de arraste.
-- **Prevenção de Erros:** Inputs e modais possuem marcações claras, botões de ação desabilitados quando inválidos e mensagens de erro explícitas.
-- **Consistência e Padrão:** Botões e inputs seguem padrões idênticos em todas as telas, facilitando o aprendizado (reconhecimento ao invés de memorização).
+- **Máximo Contraste de Leitura:** Fundo claro neutro com textos escuros sólidos, facilitando a leitura por períodos prolongados.
+- **Estruturas Sólidas:** Sem desfoques (`backdrop-filter`) ou decorações desnecessárias. Bordas cinzas sólidas e elevações reais delimitam os espaços de trabalho.
+- **Feedback de Interação:** O sistema informa o status de cada ação com cores semânticas bem demarcadas e alterações imediatas de estado (Heurística #1).
 
 ## 2. Colors
 
-A paleta de cores é sóbria, limitando o uso de cores brilhantes para dar máxima importância semântica aos status dos chamados.
+A paleta de cores é estritamente funcional, servindo para guiar a navegação e o status dos chamados.
 
 ### Primary
-- **Indigo Accent** (#6366f1): Usado exclusivamente para elementos interativos primários (links ativos, botões primários de ação e foco em inputs).
+- **Corporate Blue** (#2563eb): O azul corporativo padrão para elementos interativos primários (links ativos, botões de ação e foco de inputs).
 
 ### Neutral
-- **Slate Background** (#090d16): A cor de fundo principal do aplicativo, ideal para uso prolongado pela equipe de TI sem fadiga ocular.
-- **Card Surface** (#0f1626): Fundo para containers de colunas e cartões de chamados, criando um contraste sutil de elevação.
-- **Border Slate** (#1e293b): Divisórias finas e discretas para delimitar áreas.
+- **Slate Background** (#f8fafc): Cor cinza-clara de fundo, reduzindo o brilho branco puro da tela para maior conforto visual.
+- **Pure White Surface** (#ffffff): Fundo das colunas do Kanban, cartões de chamados e modais.
+- **Slate Border** (#cbd5e1): Bordas cinzas sólidas e bem visíveis que delimitam os cartões e colunas.
 
 ### Semantic
-- **Success/Done** (#10b981): Verde para chamados concluídos e prioridade baixa.
-- **Warning/Progress** (#f59e0b): Amarelo/Laranja para chamados em atendimento e prioridade média.
-- **Danger/High** (#f43f5e): Vermelho para chamados pendentes/críticos e prioridade alta.
+- **Todo (Pendente):** Fundo cinza suave (#f1f5f9), borda cinza (#cbd5e1) e texto cinza-escuro (#475569).
+- **In Progress (Em Atendimento):** Fundo laranja suave (#fef3c7), borda amarela (#fde68a) e texto marrom/laranja escuro (#9a3412).
+- **Review (Em Revisão):** Fundo roxo suave (#f3e8ff), borda roxa (#e9d5ff) e texto roxo-escuro (#6b21a8).
+- **Done (Concluído):** Fundo verde suave (#d1fae5), borda verde (#a7f3d0) e texto verde-escuro (#065f46).
 
 ### Named Rules
-**The 10% Contrast Rule.** Cores vibrantes (como o azul índigo ou os indicadores semânticos de erro) não devem cobrir mais do que 10% da tela, garantindo que o olho do usuário seja atraído apenas para o que realmente importa.
+**The Solid Borders Rule.** Divisões devem usar bordas sólidas visíveis (espessura mínima 1px), garantindo clareza espacial. Não use transparências ou fusões de cor para simular bordas.
 
 ## 3. Typography
 
 **Display Font:** Outfit
 **Body Font:** Inter
 
-A tipografia utiliza a força da Outfit para títulos (impondo autoridade e profissionalismo) e o conforto da Inter para leitura de descrições e formulários.
-
 ### Hierarchy
-- **Display** (Bold (700), 2rem, 1.2): Usado no título do Dashboard e logotipo da marca.
-- **Headline** (SemiBold (600), 1.25rem, 1.3): Títulos de colunas do Kanban e modais.
-- **Title** (Medium (500), 1rem, 1.4): Títulos dos cartões de chamados.
-- **Body** (Regular (400), 0.95rem, 1.5): Descrição de chamados e preenchimento de inputs.
-- **Label** (Medium (500), 0.75rem, uppercase): Rótulos de formulários e pequenas tags de status/prioridade.
+- **Display** (Bold (700), 1.8rem, 1.2): Logotipo da marca e título do painel.
+- **Headline** (SemiBold (600), 1.2rem, 1.3): Títulos de colunas e modais.
+- **Title** (SemiBold (600), 0.95rem, 1.4): Título do chamado no cartão.
+- **Body** (Regular (400), 0.95rem, 1.5): Descrição de chamados e campos de texto.
+- **Label** (Medium (500), 0.75rem, uppercase): Rótulos de formulário e pequenas tags de dados.
 
 ## 4. Elevation
 
-O sistema é predominantemente bidimensional (flat), utilizando tonalidades contrastantes para indicar profundidade. Sombras são reservadas exclusivamente para estados interativos.
+O sistema utiliza sombras cinzas suaves nativas do navegador para indicar o empilhamento de modais e o arraste de elementos interativos.
 
 ### Named Rules
-**The Interaction Shadow Rule.** Cartões de chamados não possuem sombras em repouso. Uma sombra difusa de elevação (`box-shadow: 0 10px 20px -5px rgba(0,0,0,0.4)`) é aplicada somente no estado de pairar (hover) ou de arrastar (drag), simulando que o objeto físico foi levantado do painel.
+**The Drop Shadow Elevation Rule.** Cartões de chamados em repouso possuem apenas uma borda cinza fina. No estado de pairar (hover) ou arraste (drag), é aplicada uma sombra de elevação cinza suave (`box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)`) para simular elevação física.
 
 ## 5. Components
 
 ### Buttons
-- **Shape:** Arredondamento médio (14px).
-- **Primary:** Fundo Indigo (#6366f1) com texto branco. Possui uma transição suave de 0.2s para hover.
-- **Secondary:** Fundo translúcido com borda cinza fina. Transita para fundo opaco no hover.
+- **Shape:** Arredondamento padrão de 8px.
+- **Primary:** Azul Corporativo (#2563eb) com texto branco. 
+- **Secondary:** Fundo branco com borda cinza e texto cinza-escuro.
 
 ### Cards / Containers
-- **Corner Style:** Arredondamento suave (14px).
-- **Background:** Fundo escuro levemente mais claro que a página (#0f1626).
-- **Border:** Borda fina sutil (#1e293b).
+- **Corner Style:** Arredondamento padrão de 8px.
+- **Background:** Branco puro (#ffffff).
+- **Border:** Cinza sólido (#cbd5e1).
 
 ### Inputs / Fields
-- **Style:** Fundo escuro com borda sutil. Rótulo posicionado acima do input.
-- **Focus:** No foco, a borda assume a cor Indigo (#6366f1) com um anel de brilho sutil ao redor.
+- **Style:** Fundo branco com borda cinza bem visível. Rótulos sempre visíveis (evitando ocultação).
+- **Focus:** No foco, a borda assume a cor Azul Corporativo (#2563eb).
 
 ## 6. Do's and Don'ts
 
 ### Do:
-- **Do** Manter a taxa de contraste de todo texto de chamados e formulários em conformidade com as diretrizes de acessibilidade (mínimo 4.5:1).
-- **Do** Adicionar feedback imediato quando um chamado é arrastado de uma coluna para outra, confirmando visualmente a conclusão da ação (Heurística #1).
-- **Do** Garantir que o usuário possa fechar modais ou cancelar ações facilmente com botões explícitos de "Voltar" ou "Cancelar" (Heurística #3).
+- **Do** Manter o contraste de leitura de todos os textos (incluindo descrições de chamados) sempre em conformidade com a WCAG (mínimo 4.5:1, idealmente > 7:1).
+- **Do** Indicar visualmente através de um ícone de cadeado ou cursor de bloqueio (`cursor: not-allowed`) quando o usuário for um Cliente e não puder arrastar os chamados no Kanban (Heurística de Prevenção de Erros).
+- **Do** Exibir um balão de alerta claro contendo a contagem de chamados ativos em cada coluna (Heurística #1).
 
 ### Don't:
-- **Don't** Usar gradientes berrantes ou textos em degradê no painel. O design deve ser corporativo e limpo.
-- **Don't** Utilizar bordas coloridas grossas em cartões para indicar prioridade (evitar SaaS cliché). Use tags internas ou pequenos círculos de cor.
-- **Don't** Esconder informações de erro críticas em modais genéricos. Mostre o erro logo ao lado do campo relevante (ex: "E-mail inválido").
+- **Don't** Usar fundos pretos ou roxos com brilhos/gradientes de neon (cara de IA/cripto).
+- **Don't** Usar transparência (`opacity` ou cores RGBA com baixa opacidade) no fundo de cartões de chamados ou de modais, o que prejudica a legibilidade do texto que fica abaixo.
+- **Don't** Usar bordas coloridas grossas em cartões para indicar prioridade (evitar SaaS cliché). Use tags internas ou pequenos círculos de cor.
+- **Don't** Ocultar mensagens de erro em caixas de diálogo genéricas (ex: "Ocorreu um erro"). Aponte o erro no próprio campo afetado.

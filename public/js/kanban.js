@@ -204,6 +204,9 @@ function createTicketCard(ticket) {
   const catLabel = categoryLabels[ticket.category] || 'Geral';
   const catDotClass = `category-dot ${ticket.category || 'other'}`;
 
+  // Usability Lock Icon for Clients (Nielsen Heuristics #1 & #5)
+  const lockIconHTML = !isTech ? '<i class="ri-lock-line" title="Kanban em modo leitura"></i> ' : '';
+
   // Assignee layout
   const assigneeInitial = ticket.assignee_name ? getInitials(ticket.assignee_name) : '?';
   const assigneeName = ticket.assignee_name ? ticket.assignee_name : 'Não Atribuído';
@@ -217,7 +220,7 @@ function createTicketCard(ticket) {
     <div class="ticket-badges">
       <span class="ticket-badge ${priorityClass}">${priorityLabels[ticket.priority]}</span>
       <span class="category-tag">
-        <span class="${catDotClass}"></span> ${catLabel}
+        ${lockIconHTML}<span class="${catDotClass}"></span> ${catLabel}
       </span>
     </div>
     <h4 class="ticket-title">${escapeHTML(ticket.title)}</h4>
