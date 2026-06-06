@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seu Chamado - Login / Cadastro</title>
+  <!-- Google Fonts & Remix Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <main class="auth-page">
+    <div class="auth-card" id="authCard">
+      
+      <!-- Header -->
+      <div class="auth-header">
+        <h1 class="auth-logo">
+          <i class="ri-ticket-2-line"></i> Seu Chamado
+        </h1>
+        <p class="auth-subtitle" id="authSubtitle">Acesse o sistema de suporte de TI</p>
+      </div>
+
+      <!-- Tab Switchers (Nielsen Heuristic #1) -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Cadastrar</button>
+      </div>
+
+      <!-- Error/Success alerts (Nielsen Heuristic #9) -->
+      <div id="alertBox" style="display: none;"></div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">E-mail Corporativo</label>
+          <div class="form-input-wrapper">
+            <i class="ri-mail-line form-input-icon"></i>
+            <input class="form-input" type="email" id="loginEmail" placeholder="exemplo@empresa.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Senha</label>
+          <div class="form-input-wrapper">
+            <i class="ri-lock-line form-input-icon"></i>
+            <input class="form-input" type="password" id="loginPassword" placeholder="Sua senha de acesso" required>
+          </div>
+        </div>
+
+        <button class="btn" type="submit" id="btnLoginSubmit">
+          Entrar no Painel <i class="ri-arrow-right-line"></i>
+        </button>
+      </form>
+
+      <!-- Register Form (Hidden by default) -->
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="regName">Nome Completo</label>
+          <div class="form-input-wrapper">
+            <i class="ri-user-line form-input-icon"></i>
+            <input class="form-input" type="text" id="regName" placeholder="Seu nome" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regEmail">E-mail Corporativo</label>
+          <div class="form-input-wrapper">
+            <i class="ri-mail-line form-input-icon"></i>
+            <input class="form-input" type="email" id="regEmail" placeholder="exemplo@empresa.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regRole">Tipo de Usuário</label>
+          <div class="form-input-wrapper">
+            <i class="ri-shield-user-line form-input-icon"></i>
+            <select class="form-input" id="regRole" required>
+              <option value="client">Cliente (Abre chamados de suporte)</option>
+              <option value="tech">Técnico de TI (Atende chamados & Kanban)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Senha</label>
+          <div class="form-input-wrapper">
+            <i class="ri-lock-line form-input-icon"></i>
+            <input class="form-input" type="password" id="regPassword" placeholder="No mínimo 6 caracteres" required>
+          </div>
+        </div>
+
+        <button class="btn" type="submit" id="btnRegisterSubmit">
+          Criar Conta <i class="ri-user-add-line"></i>
+        </button>
+      </form>
+
+      <div class="form-toggle-text">
+        <span id="toggleQuestion">Ainda não tem cadastro?</span>
+        <a class="form-toggle-link" id="toggleLink" onclick="toggleAuthMode()">Criar conta</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

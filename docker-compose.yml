@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: seu_chamado_db_container
+    restart: always
+    environment:
+      POSTGRES_USER: seu_chamado_user
+      POSTGRES_PASSWORD: seu_chamado_password
+      POSTGRES_DB: seu_chamado_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U seu_chamado_user -d seu_chamado_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: seu_chamado_app_container
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=seu_chamado_user
+      - DB_PASSWORD=seu_chamado_password
+      - DB_NAME=seu_chamado_db
+      - JWT_SECRET=c2V1X2NoYW1hZG9fc2VjcmV0X2tleV9mb3JfY29sbGVnZV9wcm9qZWN0XzIwMjY=
+      - NODE_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+    driver: local
