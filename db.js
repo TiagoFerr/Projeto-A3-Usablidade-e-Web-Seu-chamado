@@ -41,10 +41,16 @@ async function initDatabase() {
         name VARCHAR(100) NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(20) DEFAULT 'client', -- 'client' or 'tech'
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
     console.log('Verified/Created "users" table.');
+
+    // Schema Migration: Add role column if it does not exist in the database volume
+    await client.query(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'client';
+    `);
 
     // 2. Create Tickets Table
     await client.query(`
@@ -73,8 +79,8 @@ async function initDatabase() {
       const defaultPassHash = '$2a$10$tZ2zN6K/Hw.NnS/mky5v0eA3mF4s4lVfL7Y2eI80B3z6rZgDq2uD.'; // '123456'
       
       const seedUserRes = await client.query(`
-        INSERT INTO users (name, email, password_hash) 
-        VALUES ('Suporte Seu Chamado', 'suporte@seuchamado.com.br', $1) 
+        INSERT INTO users (name, email, role, password_hash) 
+        VALUES ('Suporte Seu Chamado', 'suporte@seuchamado.com.br', 'tech', $1) 
         RETURNING id;
       `, [defaultPassHash]);
 
