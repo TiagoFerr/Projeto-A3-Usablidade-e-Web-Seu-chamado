@@ -1,12 +1,9 @@
-/* 
-   Seu Chamado - IT Ticket Kanban System
-   Design System: The Solid Support Desk (Corporate Light Mode)
-*/
+
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
 
 :root {
-  /* Color Palette - DESIGN.md Normative Tokens */
+  
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
   --color-primary-glow: rgba(37, 99, 235, 0.15);
@@ -17,12 +14,12 @@
   --color-neutral-border: #cbd5e1;
   --color-neutral-card-border: #94a3b8;
   
-  /* Text Colors with high contrast (meets WCAG 4.5:1 ratio) */
+  
   --text-main: #0f172a;
   --text-muted: #475569;
   --text-inverse: #ffffff;
   
-  /* Semantic Colors - solid high contrast text with soft background */
+  
   --color-success: #065f46;
   --color-success-bg: #d1fae5;
   --color-success-border: #a7f3d0;
@@ -39,21 +36,21 @@
   --color-info-bg: #dbeafe;
   --color-info-border: #bfdbfe;
 
-  /* Fonts */
+  
   --font-display: 'Outfit', 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
   
-  /* Radii */
+  
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
   
-  /* Transitions */
+  
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
 }
 
-/* Reset & Base Styles */
+
 * {
   margin: 0;
   padding: 0;
@@ -70,7 +67,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -86,7 +83,7 @@ body {
   background: var(--color-primary);
 }
 
-/* Typography styling */
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 700;
@@ -100,9 +97,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 24px;
 }
 
-/* ==========================================
-   AUTHENTICATION CARD STYLING (INDEX.HTML)
-   ========================================== */
+
 .auth-page {
   display: flex;
   align-items: center;
@@ -152,7 +147,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.9rem;
 }
 
-/* Tabs Toggle */
+
 .auth-tabs {
   display: flex;
   background: var(--color-neutral-bg);
@@ -183,7 +178,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--color-neutral-border);
 }
 
-/* Forms general */
+
 .form-group {
   margin-bottom: 16px;
   text-align: left;
@@ -243,7 +238,7 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.15);
 }
 
-/* Select element */
+
 select.form-input {
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='%23475569' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
@@ -252,7 +247,7 @@ select.form-input {
   padding-right: 36px;
 }
 
-/* Primary Button Component */
+
 .btn {
   width: 100%;
   background: var(--color-primary);
@@ -287,7 +282,7 @@ select.form-input {
   cursor: not-allowed;
 }
 
-/* Secondary Button Variant */
+
 .btn-secondary {
   background: var(--color-neutral-surface);
   border-color: var(--color-neutral-border);
@@ -301,7 +296,7 @@ select.form-input {
   border-color: var(--color-neutral-card-border);
 }
 
-/* Danger Button Variant */
+
 .btn-danger {
   background: var(--color-danger);
   border-color: var(--color-danger);
@@ -340,7 +335,7 @@ select.form-input {
   text-decoration: underline;
 }
 
-/* Alerts - Visibility of System Status */
+
 .alert {
   padding: 10px 14px;
   border-radius: var(--radius-sm);
@@ -365,16 +360,14 @@ select.form-input {
 }
 
 
-/* ==========================================
-   DASHBOARD & KANBAN LAYOUT (DASHBOARD.HTML)
-   ========================================== */
+
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Navigation Header */
+
 header {
   background: var(--color-neutral-surface);
   border-bottom: 1px solid var(--color-neutral-border);
@@ -464,7 +457,7 @@ header {
   color: var(--color-danger);
 }
 
-/* Dashboard Filter Bar */
+
 .board-header {
   display: flex;
   justify-content: space-between;
@@ -493,7 +486,7 @@ header {
   flex-wrap: wrap;
 }
 
-/* Search bar component */
+
 .search-bar {
   position: relative;
   width: 200px;
@@ -526,7 +519,7 @@ header {
   font-size: 0.8rem;
 }
 
-/* Filter selects */
+
 .filter-select {
   background: var(--color-neutral-surface);
   border: 1px solid var(--color-neutral-border);
@@ -553,9 +546,7 @@ header {
   font-size: 0.8rem;
 }
 
-/* ==========================================
-   KANBAN BOARD GRID SYSTEM
-   ========================================== */
+
 .kanban-board {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -577,7 +568,7 @@ header {
 }
 
 .kanban-column {
-  background: #f1f5f9; /* Slate 100 - clean and native */
+  background: #f1f5f9; 
   border: 1px solid var(--color-neutral-border);
   border-radius: var(--radius-lg);
   padding: 12px;
@@ -587,9 +578,9 @@ header {
   transition: var(--transition-fast);
 }
 
-/* Drag over column state (Nielsen Heuristic #1) */
+
 .kanban-column.drag-over {
-  background: #eff6ff; /* light blue */
+  background: #eff6ff; 
   border-color: var(--color-primary);
 }
 
@@ -616,7 +607,7 @@ header {
 
 .column-todo .column-indicator { background: var(--text-muted); }
 .column-progress .column-indicator { background: var(--color-primary); }
-.column-review .column-indicator { background: #8b5cf6; } /* purple */
+.column-review .column-indicator { background: #8b5cf6; } 
 .column-done .column-indicator { background: #16a34a; }
 
 .column-title {
@@ -645,9 +636,7 @@ header {
   min-height: 380px;
 }
 
-/* ==========================================
-   KANBAN CARDS STYLING
-   ========================================== */
+
 .ticket-card {
   background: var(--color-neutral-surface);
   border: 1px solid var(--color-neutral-border);
@@ -664,7 +653,7 @@ header {
 }
 
 .ticket-card:hover {
-  /* Drop Shadow Elevation Rule */
+  
   border-color: var(--color-neutral-card-border);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
 }
@@ -674,7 +663,7 @@ header {
   cursor: grabbing;
 }
 
-/* Card Header Badges */
+
 .ticket-badges {
   display: flex;
   align-items: center;
@@ -691,7 +680,7 @@ header {
   border-radius: 4px;
 }
 
-/* Priority settings */
+
 .priority-high {
   background: var(--color-danger-bg);
   color: var(--color-danger);
@@ -728,7 +717,7 @@ header {
 .category-dot.network { background: #10b981; }
 .category-dot.other { background: #64748b; }
 
-/* Card Body */
+
 .ticket-title {
   font-size: 0.88rem;
   font-weight: 600;
@@ -748,7 +737,7 @@ header {
   text-overflow: ellipsis;
 }
 
-/* Card Footer */
+
 .ticket-footer {
   display: flex;
   justify-content: space-between;
@@ -784,7 +773,7 @@ header {
   color: var(--text-muted);
 }
 
-/* Empty State column card */
+
 .empty-column-message {
   border: 1px dashed var(--color-neutral-border);
   border-radius: var(--radius-md);
@@ -807,9 +796,7 @@ header {
 }
 
 
-/* ==========================================
-   MODAL WINDOW COMPONENTS (CREATE & VIEW)
-   ========================================== */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -900,7 +887,7 @@ header {
   font-size: 0.85rem;
 }
 
-/* Two-column wrapper inside modal forms */
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -919,7 +906,7 @@ textarea.form-input {
   min-height: 80px;
 }
 
-/* View Ticket Details Specifics */
+
 .ticket-details-info {
   display: flex;
   flex-direction: column;
@@ -957,7 +944,7 @@ textarea.form-input {
   color: var(--text-main);
 }
 
-/* Keyframes */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -980,7 +967,7 @@ textarea.form-input {
   }
 }
 
-/* Reduced motion settings */
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-delay: 0s !important;

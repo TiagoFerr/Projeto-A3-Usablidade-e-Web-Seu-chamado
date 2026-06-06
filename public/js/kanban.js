@@ -1,7 +1,4 @@
-/**
-   Seu Chamado - Kanban Board & Ticket Operations
-   Implements HTML5 Drag and Drop, Filtering, Modals, and API synchronization
- */
+
 
 const TICKETS_API = '/api/tickets';
 const USERS_API = '/api/users';
@@ -11,7 +8,7 @@ let allTickets = [];
 let allUsers = [];
 let activeDragCard = null;
 
-// DOM Elements
+
 const kanbanContainers = {
   todo: document.getElementById('container-todo'),
   in_progress: document.getElementById('container-in_progress'),
@@ -26,12 +23,12 @@ const columnCounts = {
   done: document.getElementById('count-done')
 };
 
-// Initialize Dashboard
+
 document.addEventListener('DOMContentLoaded', async () => {
   currentUser = await checkAuth();
-  if (!currentUser) return; // checkAuth will redirect if session is invalid
+  if (!currentUser) return; 
 
-  // Update nav profile
+  
   document.getElementById('navUserName').innerText = currentUser.name;
   document.getElementById('navUserInitials').innerText = getInitials(currentUser.name);
   
@@ -39,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const roleLabel = isTech ? 'Técnico de TI' : 'Cliente';
   document.getElementById('navUserRoleBadge').innerText = roleLabel;
   
-  // Show/Hide open assign field in create modal
+  
   const techAssignGroup = document.getElementById('techAssignGroup');
   if (isTech) {
     techAssignGroup.style.display = 'block';
@@ -47,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     techAssignGroup.style.display = 'none';
   }
 
-  // Set visual feedback banner based on user role (Nielsen Heuristic #1)
+  
   const banner = document.getElementById('roleAlertBanner');
   const bannerText = document.getElementById('roleAlertText');
   banner.style.display = 'flex';
@@ -61,12 +58,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     bannerText.innerHTML = `<strong>Acesso Cliente:</strong> O painel Kanban está no modo leitura (bloqueado para arrastar). Você pode abrir chamados e atualizar/excluir chamados criados por você.`;
   }
 
-  // Load initial data
+  
   await loadUsers();
   await loadTickets();
 });
 
-// Helper: Get Initials
+
 function getInitials(name) {
   if (!name) return 'U';
   const parts = name.trim().split(' ');
@@ -74,7 +71,7 @@ function getInitials(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// Load users list for assignment selectors
+
 async function loadUsers() {
   try {
     const response = await fetch(USERS_API);
@@ -87,17 +84,17 @@ async function loadUsers() {
   }
 }
 
-// Populate Assignment Dropdowns (Nielsen Heuristic #6 Recognition)
+
 function populateUserDropdowns() {
   const createAssigneeSelect = document.getElementById('ticketAssignee');
   const detailAssigneeSelect = document.getElementById('detailAssigneeSelect');
 
-  // Clear previous options except the default ones
+  
   createAssigneeSelect.innerHTML = '<option value="">Não atribuído</option>';
   detailAssigneeSelect.innerHTML = '<option value="">Não atribuído</option>';
 
   allUsers.forEach(user => {
-    // We can assign to anyone, but techs are highlighted
+    
     const label = user.role === 'tech' ? `${user.name} (Técnico)` : user.name;
     const optionHTML = `<option value="${user.id}">${label}</option>`;
     createAssigneeSelect.insertAdjacentHTML('beforeend', optionHTML);
@@ -105,7 +102,7 @@ function populateUserDropdowns() {
   });
 }
 
-// Load Tickets from API
+
 async function loadTickets() {
   try {
     const response = await fetch(TICKETS_API);
@@ -120,9 +117,9 @@ async function loadTickets() {
   }
 }
 
-// Render tickets on the Kanban Board
+
 function renderBoard() {
-  // Clear columns
+  
   Object.keys(kanbanContainers).forEach(status => {
     kanbanContainers[status].innerHTML = '';
   });
@@ -140,7 +137,7 @@ function renderBoard() {
     return matchesSearch && matchesCategory && matchesPriority;
   });
 
-  // Track counts per column
+  
   const counts = { todo: 0, in_progress: 0, review: 0, done: 0 };
 
   filteredTickets.forEach(ticket => {
@@ -152,11 +149,11 @@ function renderBoard() {
     }
   });
 
-  // Update header counters (Nielsen Heuristic #1 Status visibility)
+  
   Object.keys(columnCounts).forEach(status => {
     columnCounts[status].innerText = counts[status];
     
-    // If column has 0 cards, display an empty state placeholder
+    
     if (counts[status] === 0) {
       const emptyMsg = `
         <div class="empty-column-message">
@@ -169,7 +166,7 @@ function renderBoard() {
   });
 }
 
-// Create Card HTML Element
+
 function createTicketCard(ticket) {
   const isTech = currentUser.role === 'tech';
   const card = document.createElement('div');
@@ -178,7 +175,7 @@ function createTicketCard(ticket) {
   card.setAttribute('id', `ticket-${ticket.id}`);
   card.setAttribute('data-id', ticket.id);
   
-  // DRAG AND DROP ACCESS CONTROL: Only technicians can drag cards!
+  
   if (isTech) {
     card.setAttribute('draggable', 'true');
     card.addEventListener('dragstart', handleDragStart);
@@ -188,26 +185,26 @@ function createTicketCard(ticket) {
     card.style.cursor = 'pointer';
   }
 
-  // Handle card click to view details (Nielsen Heuristic #7)
+  
   card.addEventListener('click', (e) => {
-    // Prevent trigger if they are dragging
+    
     if (card.classList.contains('dragging')) return;
     openDetailsModal(ticket);
   });
 
-  // Priority Badge layout
+  
   const priorityLabels = { low: 'Baixa', medium: 'Média', high: 'Alta' };
   const priorityClass = `priority-${ticket.priority}`;
   
-  // Category layout
+  
   const categoryLabels = { hardware: 'Hardware', software: 'Software', network: 'Rede', other: 'Geral' };
   const catLabel = categoryLabels[ticket.category] || 'Geral';
   const catDotClass = `category-dot ${ticket.category || 'other'}`;
 
-  // Usability Lock Icon for Clients (Nielsen Heuristics #1 & #5)
+  
   const lockIconHTML = !isTech ? '<i class="ri-lock-line" title="Kanban em modo leitura"></i> ' : '';
 
-  // Assignee layout
+  
   const assigneeInitial = ticket.assignee_name ? getInitials(ticket.assignee_name) : '?';
   const assigneeName = ticket.assignee_name ? ticket.assignee_name : 'Não Atribuído';
   const assigneeAvatarHTML = ticket.assignee_name 
@@ -237,7 +234,7 @@ function createTicketCard(ticket) {
   return card;
 }
 
-// Helpers for HTML Escaping & Date Formatting
+
 function escapeHTML(str) {
   if (!str) return '';
   return str

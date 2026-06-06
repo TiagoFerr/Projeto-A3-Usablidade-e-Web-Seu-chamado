@@ -1,11 +1,8 @@
-/**
-   Seu Chamado - Authentication Management
-   Handles Login, Register, Session validation, and Logout
- */
+
 
 const AUTH_API = '/api/auth';
 
-// Show a message in the alert boxes (Nielsen Heuristic #9)
+
 function showAlert(boxId, message, type = 'danger') {
   const alertBox = document.getElementById(boxId);
   if (!alertBox) return;
@@ -17,7 +14,7 @@ function showAlert(boxId, message, type = 'danger') {
     <span>${message}</span>
   `;
 
-  // Scroll to top of card to see alert
+  
   const cardBody = alertBox.closest('.modal-body') || alertBox.closest('.auth-card');
   if (cardBody) {
     cardBody.scrollTop = 0;
@@ -32,7 +29,7 @@ function clearAlert(boxId) {
   }
 }
 
-// Switch between tabs in index.html (Nielsen Heuristic #1)
+
 function switchTab(mode) {
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
@@ -70,7 +67,7 @@ function toggleAuthMode() {
   switchTab(isLoginActive ? 'register' : 'login');
 }
 
-// Handle Login Submission
+
 async function handleLogin(event) {
   event.preventDefault();
   clearAlert('alertBox');
@@ -97,7 +94,7 @@ async function handleLogin(event) {
 
     showAlert('alertBox', 'Login realizado com sucesso! Redirecionando...', 'success');
     
-    // Redirect to dashboard after a brief delay
+    
     setTimeout(() => {
       window.location.href = '/dashboard.html';
     }, 1200);
@@ -109,7 +106,7 @@ async function handleLogin(event) {
   }
 }
 
-// Handle Register Submission
+
 async function handleRegister(event) {
   event.preventDefault();
   clearAlert('alertBox');
@@ -130,12 +127,12 @@ async function handleRegister(event) {
       body: JSON.stringify({ name, email, role, password })
     });
 
-    // Wait, the backend server.js register currently inserts name, email, password_hash, but NOT role yet!
-    // Wait! Let's check server.js registration query.
-    // Yes! Let's check my server.js code. I wrote:
-    // `INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email`
-    // Wait, since I realized we need role, I should update server.js to support role registration!
-    // Yes, this is a minor adjustment to make sure the role field works. I will do that edit in a moment.
+    
+    
+    
+    
+    
+    
     
     const data = await response.json();
 
@@ -156,7 +153,7 @@ async function handleRegister(event) {
   }
 }
 
-// Handle Logout
+
 async function handleLogout() {
   try {
     await fetch(`${AUTH_API}/logout`, { method: 'POST' });
@@ -167,7 +164,7 @@ async function handleLogout() {
   }
 }
 
-// Check Session on page load
+
 async function checkAuth() {
   const currentPath = window.location.pathname;
 
@@ -176,13 +173,13 @@ async function checkAuth() {
     const data = await response.json();
 
     if (response.ok && data.user) {
-      // User is authenticated. If they are on the login portal, redirect them to dashboard.
+      
       if (currentPath.includes('index.html') || currentPath === '/' || currentPath === '/login') {
         window.location.href = '/dashboard.html';
       }
       return data.user;
     } else {
-      // User not authenticated. If they are on the dashboard, kick them back to login.
+      
       if (currentPath.includes('dashboard.html') || currentPath === '/dashboard') {
         window.location.href = '/index.html';
       }
@@ -196,7 +193,7 @@ async function checkAuth() {
   return null;
 }
 
-// Check session immediately if we are on dashboard page
+
 if (window.location.pathname.includes('dashboard.html')) {
   document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
