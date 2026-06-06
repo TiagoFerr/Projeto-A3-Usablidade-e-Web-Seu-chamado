@@ -1,82 +1,120 @@
-# Seu Chamado - Sistema de Chamados de TI (Kanban)
+# Relatório de Projeto Acadêmico (Avaliação A3)
+## Sistema "Seu Chamado" - Kanban de Suporte de TI
 
-Este é um projeto acadêmico de engenharia web desenvolvido para a disciplina de **Engenharia de Software, Interface Homem-Computador (IHC) e Usabilidade**. O sistema gerencia solicitações de suporte de tecnologia através de um quadro visual **Kanban**, implementando conceitos práticos de controle de acessos, segurança, persistência relacional e usabilidade profissional.
-
-O projeto adota ferramentas fundamentais da web (**HTML, CSS e JavaScript puros**) no frontend, demonstrando que a aplicação rigorosa de boas práticas de design e arquitetura independe do uso de frameworks complexos.
-
----
-
-## 🚀 Tecnologias e Dependências
-
-### Frontend (Vanilla)
-* **HTML5:** Semântica nativa para acessibilidade estrutural.
-* **CSS3:** Paleta corporativa sob medida (Light Mode), layouts flexíveis (Flexbox e CSS Grid) e animações suaves de transição.
-* **JavaScript (ES6):** Manipulação de DOM nativa, requisições Fetch assíncronas e controle da API HTML5 de Drag and Drop.
-* **Remix Icon CDN:** Biblioteca de ícones vetoriais modernos e minimalistas.
-
-### Backend (Node.js)
-* **Express:** Roteamento de APIs REST e fornecimento de recursos estáticos.
-* **PG (node-postgres):** Pool de conexões e execução de queries SQL no PostgreSQL.
-* **Bcryptjs:** Criptografia unidirecional com salting para segurança de senhas de usuários.
-* **JSON Web Token (JWT):** Geração de assinaturas criptografadas de sessão.
-* **Cookie Parser:** Leitura segura de tokens de sessão enviados via cabeçalhos HTTP.
-* **Dotenv:** Gerenciamento isolado de variáveis de ambiente.
-
-### Banco de Dados & Infraestrutura
-* **PostgreSQL 15:** Banco de dados relacional.
-* **Docker & Docker Compose:** Containerização e orquestração do ambiente completo.
+Este documento constitui o **Relatório Completo de Projeto** da aplicação **Seu Chamado**, desenvolvida para a avaliação **A3** nas disciplinas correlatas de **Engenharia de Software, Interface Homem-Computador (IHC) e Desenvolvimento Web / Usabilidade**.
 
 ---
 
-## 🧠 Heurísticas de Usabilidade Aplicadas (Jakob Nielsen)
-
-O design e fluxo do "Seu Chamado" foram projetados inteiramente em cima das **10 Heurísticas de Jakob Nielsen**, com destaque para a prevenção e tratamento amigável de erros:
-
-1. **Visibilidade do status do sistema (Heurística #1):**
-   * Contadores numéricos dinâmicos no cabeçalho das colunas do Kanban atualizam o volume de chamados na hora.
-   * Transições visuais imediatas com alteração da cor de fundo da coluna do Kanban durante o arraste do cartão de chamado.
-   * Mensagens de alerta no topo do painel identificam o perfil logado e as ações permitidas.
-2. **Compatibilidade do sistema com o mundo real (Heurística #2):**
-   * Nomenclaturas reais do setor de tecnologia (Pendente, Em Atendimento, Em Revisão, Concluído).
-   * Ícones intuitivos indicando prioridades (Alta/Média/Baixa) e categorias de chamados (Hardware, Software, Redes).
-3. **Controle e liberdade do usuário (Heurística #3):**
-   * Botões explícitos para cancelar aberturas de chamados.
-   * Botão de exclusão para remover chamados criados incorretamente (disponível para técnicos ou o próprio criador).
-4. **Consistência e padrões (Heurística #4):**
-   * Botões primários, secundários e inputs seguem a mesma identidade de bordas sólidas, arredondamentos (8px) e tipografia Outfit/Inter.
-5. **Prevenção de erros (Heurística #5):**
-   * **Submit Lock:** O botão "Confirmar Abertura" inicia bloqueado (`disabled`) e só é liberado quando o título tem no mínimo 5 caracteres e a descrição 10.
-   * **Aviso de Descarte:** Se o usuário preencher o formulário de abertura e tentar fechar a janela (clicando no Cancelar, no fechar `X` ou fora do modal), o sistema exibe uma confirmação para evitar a perda acidental do rascunho.
-6. **Reconhecimento em vez de memorização (Heurística #6):**
-   * Dropdown dinâmico para atribuição de técnicos de suporte. O usuário escolhe a partir de uma lista visual em vez de precisar lembrar e digitar o e-mail ou código do técnico.
-7. **Flexibilidade e eficiência de uso (Heurística #7):**
-   * Técnicos podem arrastar cartões de chamados diretamente no painel Kanban.
-   * Usuários comuns (Clientes) visualizam o painel com indicadores de cadeado e podem alterar o status do chamado selecionando uma caixa de opções dentro do modal de detalhes, adaptando a eficiência ao perfil de acesso.
-8. **Estética e design minimalista (Heurística #8):**
-   * Visual "Corporate Light Mode" limpo, livre de degradês de neon brilhantes ou efeitos transparentes. Foco total em dados legíveis e bordas discretas.
-9. **Ajuda os usuários a reconhecerem, diagnosticarem e recuperarem-se de erros (Heurística #9):**
-   * **Validação por Foco de Saída (Blur):** As mensagens de erro e as bordas vermelhas do formulário só aparecem se o usuário interagir e sair do campo deixando-o incompleto. Não há alertas pulando na tela enquanto o usuário digita.
-10. **Ajuda e documentação (Heurística #10):**
-    * Placeholders explicativos e exemplos dentro dos campos de texto (ex: `Ex: Monitor piscando, Falha na VPN...`).
+## 👨‍💻 Identificação do Projeto
+* **Nome do Projeto:** Seu Chamado
+* **Objetivo:** Sistema de Chamados de TI estilo Kanban com controle de acessos semânticos e foco em usabilidade.
+* **Autor:** Tiago Ferreira (GitHub: [@TiagoFerr](https://github.com/TiagoFerr))
+* **Contexto:** Projeto Prático Acadêmico (Avaliação A3) - Foco em IHC, Usabilidade Web e Princípios de Design Limpo.
+* **Tecnologia Principal:** Vanilla Web Stack (HTML/CSS/JS puros) no frontend, Node.js no backend e PostgreSQL como banco de dados.
 
 ---
 
-## 📋 Perfis de Acesso (Roles)
+## 1. 📝 Introdução e Contexto do Produto
 
-* **Cliente:** Perfil voltado para funcionários da empresa que abrem chamados.
-  * O quadro Kanban fica em modo leitura com um ícone de cadeado.
-  * Pode abrir novos chamados.
-  * Pode editar o status ou excluir **apenas os chamados criados por ele mesmo**.
-* **Técnico de TI:** Perfil administrativo para a equipe de suporte.
-  * Possui permissão completa de movimentação dos cartões via drag-and-drop.
-  * Pode atribuir responsáveis aos chamados e atualizar o status de qualquer chamado.
-  * Pode excluir chamados do quadro.
+No ambiente de suporte de tecnologia (Help Desk), a agilidade e a clareza na triagem de incidentes são críticas. Sistemas legados costumam falhar ao apresentar tabelas textuais densas, com baixo contraste e fluxos complexos que induzem o usuário ao erro ao abrir ou mover solicitações.
+
+O **Seu Chamado** foi concebido para resolver essas fricções, fornecendo uma interface visual baseada em quadros **Kanban**. Ele foi projetado sob os pilares da **Interação Homem-Computador (IHC)**, garantindo que o design apoie a tarefa do usuário, limite sua carga cognitiva e previna erros operacionais.
+
+### Objetivos do Sistema:
+1. **Centralização:** Permitir o registro, triagem, atribuição e resolução de chamados em uma plataforma única.
+2. **Eficiência Espacial:** Organizar os chamados visualmente por estado de atendimento (Pendente, Em Atendimento, Em Revisão e Concluído).
+3. **Segurança de Nível Corporativo:** Garantir que o perfil técnico gerencie o fluxo, enquanto os clientes mantêm a autonomia sobre seus próprios chamados.
 
 ---
 
-## 🛠️ Modelagem de Banco de Dados
+## 2. 👥 Perfis de Usuários (Roles) e IHC
 
-O PostgreSQL cria automaticamente a seguinte modelagem na inicialização do serviço:
+O sistema foi modelado para atender a dois perfis distintos de usuários com necessidades e restrições de IHC específicas:
+
+### A. Cliente (Funcionário Solicitante)
+* **Necessidades:** Interface de abertura rápida de chamados, clareza sobre o andamento e capacidade de atualizar ou fechar chamados que ele mesmo abriu.
+* **Restrições de IHC:** Não deve ter permissão para arrastar ou mover chamados de outros setores ou alterar atribuições de técnicos. Para evitar cliques acidentais, a interface de arrastar (Drag and Drop) é desativada para este perfil. Ele visualiza indicadores visuais de cadeado nos cartões e altera o status de seus próprios chamados exclusivamente através do painel de detalhes.
+
+### B. Técnico de TI (Analista de Suporte)
+* **Necessidades:** Visualização geral da fila de trabalho, triagem rápida, facilidade para assumir chamados e mover solicitações de acordo com a evolução do atendimento.
+* **Permissões de IHC:** Liberdade total de movimentação de cartões por meio de arrastar e soltar (Drag and Drop), gerenciamento de atribuição de técnicos nos cartões e exclusão geral.
+
+---
+
+## 3. 🎨 Design System e Contraste (IHC & Acessibilidade)
+
+Em vez de adotar um visual com "cara de IA" (com fundos pretos escuros, néons brilhantes e efeitos de vidro que geram poluição visual e cansaço em uso prolongado), o sistema adota o padrão **Corporate Light Mode**, inspirado em interfaces modernas como as do GitHub e TailwindUI.
+
+### Diretrizes Visuais Aplicadas (DESIGN.md):
+* **Fundo Neutro Confortável:** O fundo usa o tom `#f8fafc` (cinza-claro azulado), reduzindo o estresse ocular em relação ao branco puro.
+* **Regra das Bordas Sólidas (The Solid Borders Rule):** O design evita o uso de divisões implícitas ou transparentes. Cada coluna e cartão é cercado por uma borda sólida e visível (`#cbd5e1`), garantindo que o cérebro do usuário faça a separação física imediata dos elementos.
+* **Regra de Elevação por Sombra (The Drop Shadow Elevation Rule):** Cartões em repouso são planos (flat). Quando o usuário paira o mouse (hover) ou inicia o arraste (drag), o cartão recebe uma sombra projetada sutil. Isso simula o levantamento físico do elemento em três dimensões, fornecendo feedback de profundidade imediata ao usuário.
+* **Acessibilidade de Contraste (WCAG):** Todos os textos em tags semânticas atendem à taxa mínima de contraste de 4.5:1. As cores semânticas de status utilizam fundos pastéis claros combinados com textos escuros de alto contraste:
+  * **Pendente:** Fundo `#f1f5f9` | Texto `#475569` (Cinza)
+  * **Em Atendimento:** Fundo `#ffedd5` | Texto `#9a3412` (Laranja)
+  * **Em Revisão:** Fundo `#f3e8ff` | Texto `#6b21a8` (Roxo)
+  * **Concluído:** Fundo `#d1fae5` | Texto `#065f46` (Verde)
+
+---
+
+## 🧠 4. Aplicação Prática das 10 Heurísticas de Usabilidade de Nielsen
+
+O frontend foi desenvolvido com foco absoluto na aplicação das heurísticas de Jakob Nielsen:
+
+### 1. Visibilidade do Status do Sistema
+* **Contadores Dinâmicos:** Cada coluna no topo exibe a contagem em tempo real de chamados daquele estado (ex: `PENDENTE [3]`).
+* **Hover de Arraste:** Quando um chamado está sendo arrastado sobre uma coluna, a cor de fundo da coluna altera-se imediatamente para um azul suave (`#eff6ff`) com borda destacada, indicando que a área está pronta para receber o drop.
+* **Notificação de Estado:** Mensagens toast e alertas no topo indicam claramente se a conexão com o banco de dados e APIs está operacional.
+
+### 2. Compatibilidade do Sistema com o Mundo Real
+* **Terminologia Familiar:** O sistema adota expressões do cotidiano do suporte: "Baixa/Média/Alta" para prioridades, "Hardware/Software/Rede" para categorias e "Pendente/Em Atendimento/Revisão/Concluído" para o fluxo.
+* **Ícones Intuitivos:** Utilização de ícones de cadeados, usuários e exclamações da biblioteca Remix Icon que representam as ações do mundo real.
+
+### 3. Controle e Liberdade do Usuário
+* **Confirmação e Cancelamento:** Modais possuem botões explícitos para cancelar a operação.
+* **Exclusão Controlada:** O usuário pode excluir ou alterar o chamado caso cometa um engano, desde que possua a propriedade do chamado ou o cargo de técnico.
+
+### 4. Consistência e Padrões
+* **Design Consistente:** Toda a interface obedece estritamente ao arredondamento de cantos (`8px` para inputs e botões, `12px` para modais e colunas) e à mesma família de fontes (Outfit para títulos corporativos e Inter para textos corridos).
+
+### 5. Prevenção de Erros
+* **Submit Lock:** O botão de envio do chamado permanece desabilitado (`disabled`) com opacidade reduzida até que o formulário atenda às restrições mínimas (Título com mais de 5 caracteres e Descrição com mais de 10 caracteres). Isso impede que chamados em branco ou sem nexo sejam enviados acidentalmente.
+* **Aviso de Perda de Rascunho:** Se o usuário preencher o formulário e clicar no botão de fechar (`X`), no botão "Cancelar" ou fora da janela, o sistema intercepta a ação e exibe uma caixa de diálogo: *"Você começou a preencher o chamado. Tem certeza de que deseja descartar este rascunho?"*, prevenindo a perda involuntária de digitação.
+
+### 6. Reconhecimento em Vez de Memorização
+* **Dropdown de Atribuição:** A lista de técnicos de TI cadastrados é populada em tempo real no banco e exibida em um seletor visual. O usuário técnico escolhe o responsável a partir de uma lista estruturada em vez de ter que memorizar e digitar o nome ou e-mail de cabeça.
+
+### 7. Flexibilidade e Eficiência de Uso
+* **Controle Híbrido:** Usuários experientes (Técnicos) movem chamados rapidamente com Drag and Drop no Kanban. Clientes gerenciam seus chamados diretamente clicando neles e alterando o status via seletor dropdown, fornecendo um fluxo otimizado para as respectivas necessidades.
+
+### 8. Estética e Design Minimalista
+* **Eliminação do Supérfluo:** Não há elementos decorativos ou dados irrelevantes no cartão de chamados. Apenas o essencial é renderizado na tela principal: prioridade, categoria, título, descrição curta, responsável e data de criação.
+
+### 9. Ajuda os Usuários a Reconhecerem, Diagnosticarem e Recuperarem-se de Erros
+* **Validação no Foco de Saída (Blur):** As mensagens de erro e a borda vermelha indicadora do input só aparecem após o usuário sair do campo de preenchimento (`blur`) caso ele o deixe vazio ou incompleto. Isso evita que erros sejam mostrados na cara do usuário enquanto ele ainda está no meio do processo de digitação.
+
+### 10. Ajuda e Documentação
+* **Placeholders Contextuais:** Dicas e formatos esperados aparecem diretamente nos placeholders de texto (ex: `Ex: Computador não liga após queda de energia`).
+
+---
+
+## 🛠️ 5. Arquitetura do Sistema e Tecnologias
+
+A aplicação utiliza uma arquitetura clássica **Monolítica Baseada em Serviços**:
+
+```
+[ Frontend: HTML/CSS/JS (Vanilla) ] <--- HTTP REST ---> [ Backend: Node.js (Express) ] <--- Connection Pool ---> [ PostgreSQL ]
+```
+
+* **Frontend:** Implementado com HTML5 estrutural e CSS3 com variáveis de design. A lógica em JavaScript nativo consome a API através de requisições Fetch assíncronas.
+* **Backend:** Servidor Node.js utilizando o framework minimalista **Express**. A segurança é feita com geração e leitura de tokens **JWT** envelopados em cookies HTTP-Only seguros (impedindo ataques de roubo de sessão via scripts maliciosos - XSS).
+* **Banco de Dados:** PostgreSQL para armazenamento persistente de tabelas relacionais de usuários e chamados.
+
+---
+
+## 🗄️ 6. Modelagem e Estrutura do Banco de Dados
+
+O banco de dados do projeto conta com duas entidades fortemente relacionadas:
 
 ```mermaid
 erDiagram
@@ -100,106 +138,46 @@ erDiagram
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
-    USERS ||--o{ TICKETS : "abre"
-    USERS ||--o{ TICKETS : "resolve"
+    USERS ||--o{ TICKETS : "cria (created_by)"
+    USERS ||--o{ TICKETS : "atribuido_a (assigned_to)"
 ```
 
----
-
-## 🔌 Documentação da API REST
-
-### 1. Autenticação (`/api/auth`)
-
-#### Cadastro de Usuário
-* **Rota:** `POST /api/auth/register`
-* **JSON de Entrada:**
-  ```json
-  {
-    "name": "João Silva",
-    "email": "joao@empresa.com",
-    "role": "client",
-    "password": "senha_secreta"
-  }
-  ```
-* **Status de Retorno:** `201 Created` ou `400 Bad Request`
-
-#### Login
-* **Rota:** `POST /api/auth/login`
-* **JSON de Entrada:**
-  ```json
-  {
-    "email": "joao@empresa.com",
-    "password": "senha_secreta"
-  }
-  ```
-* **Retorno:** Grava cookie seguro `token` com JWT e retorna `200 OK`.
-
-#### Validar Sessão
-* **Rota:** `GET /api/auth/me`
-* **Retorno:** `200 OK` contendo os dados do usuário autenticado no cookie ou `401 Unauthorized` se a sessão for inválida.
+### Auto-Migrações e Resiliência
+Para suportar o ambiente de containers Docker (onde o banco de dados pode demorar alguns segundos a mais para inicializar em relação à aplicação Node), o arquivo `db.js` implementa:
+1. **Lógica de Retry (Tentativas):** O backend tenta se conectar ao PostgreSQL até 6 vezes consecutivas com um intervalo de 5 segundos entre as tentativas antes de abortar o processo.
+2. **Auto-inicialização de Tabelas:** O script verifica a existência das tabelas `users` e `tickets`. Se não existirem, cria-as automaticamente e popula o banco de dados com dados de testes de início.
 
 ---
 
-### 2. Chamados (`/api/tickets`)
+## ⚙️ 7. Instruções para Executar o Projeto
 
-#### Criar Chamado
-* **Rota:** `POST /api/tickets`
-* **JSON de Entrada:**
-  ```json
-  {
-    "title": "Falha na Rede Wi-Fi",
-    "description": "O sinal cai constantemente na sala 4.",
-    "priority": "high",
-    "category": "network",
-    "assigned_to": null
-  }
-  ```
-* **Retorno:** `201 Created`
-
-#### Listar Todos
-* **Rota:** `GET /api/tickets`
-* **Retorno:** `200 OK` contendo um array de chamados vinculando os nomes do criador e do técnico atribuído.
-
-#### Atualizar Chamado
-* **Rota:** `PUT /api/tickets/:id`
-* **JSON de Entrada:** Todos os campos editáveis.
-* **Retorno:** `200 OK`
-
-#### Atualizar Status (Drag-and-Drop)
-* **Rota:** `PATCH /api/tickets/:id/status`
-* **JSON de Entrada:**
-  ```json
-  {
-    "status": "in_progress"
-  }
-  ```
-* **Retorno:** `200 OK`
-
----
-
-## ⚙️ Como Rodar o Projeto
+Você pode rodar o projeto de duas formas: usando Docker (ambiente isolado recomendado) ou instalando localmente na sua máquina.
 
 ### Método 1: Usando Docker (Recomendado)
-Certifique-se de que o **Docker Desktop** esteja ativo e rodando. Na pasta raiz do projeto, execute:
+Certifique-se de ter o **Docker** e o **Docker Compose** instalados e funcionando em sua máquina.
 
-```bash
-# Derruba volumes antigos (caso existam) e limpa cache
-docker-compose down -v
-
-# Compila a imagem Node e sobe os serviços
-docker-compose up --build
-```
-Acesse no navegador: **[http://localhost:3000](http://localhost:3000)**.
+1. Navegue até a pasta raiz do projeto.
+2. Execute o comando para subir os containers e limpar caches antigos:
+   ```bash
+   docker-compose down -v && docker-compose up --build
+   ```
+3. O Docker iniciará automaticamente dois serviços:
+   * **seu_chamado_db_container:** Rodando PostgreSQL na porta padrão interna `5432`.
+   * **seu_chamado_app_container:** Servidor Node.js rodando na porta externa `3000`.
+4. Acesse no seu navegador: **[http://localhost:3000](http://localhost:3000)**
 
 ---
 
 ### Método 2: Execução Local (Sem Docker)
-Caso queira rodar o Node localmente conectado ao seu PostgreSQL do Windows:
+Caso deseje rodar a aplicação diretamente no sistema operacional:
 
-1. **Configure o banco de dados:** No seu PostgreSQL local, crie um banco chamado `seu_chamado_db`.
-2. **Configure as Variáveis de Ambiente:** Abra o arquivo `.env` na raiz e altere:
+1. **Configure o Banco de Dados:** Crie um banco vazio no seu PostgreSQL local chamado `seu_chamado_db`.
+2. **Defina as Variáveis de Ambiente:** Crie ou altere o arquivo `.env` na raiz do projeto configurando as credenciais de acesso ao seu banco de dados local:
    ```env
+   PORT=3000
+   JWT_SECRET=sua_chave_secreta_aqui
    DB_HOST=localhost
+   DB_PORT=5432
    DB_USER=seu_usuario_postgres
    DB_PASSWORD=sua_senha_postgres
    DB_NAME=seu_chamado_db
@@ -208,9 +186,19 @@ Caso queira rodar o Node localmente conectado ao seu PostgreSQL do Windows:
    ```bash
    npm install
    ```
-4. **Inicie o servidor local:**
+4. **Execute o servidor de desenvolvimento:**
    ```bash
-   # Inicia com watch automático (recarrega ao salvar arquivos)
    npm run dev
    ```
-5. Acesse no navegador: **[http://localhost:3000](http://localhost:3000)**.
+5. Acesse no seu navegador: **[http://localhost:3000](http://localhost:3000)**
+
+---
+
+## 🔑 8. Credenciais Pré-configuradas para Teste (Seed)
+
+Ao inicializar o banco de dados pela primeira vez, o sistema insere automaticamente uma conta com perfil de **Técnico de TI** para que você possa avaliar as funcionalidades de arrastar cartões e atribuir responsáveis imediatamente:
+
+* **E-mail:** `suporte@seuchamado.com.br`
+* **Senha:** `123456`
+
+*(Você também pode se cadastrar livremente com qualquer e-mail no formulário da página inicial e selecionar se deseja o perfil de **Cliente** ou **Técnico**).*
