@@ -1,141 +1,216 @@
 # Seu Chamado - Sistema de Chamados de TI (Kanban)
 
-Este é um projeto acadêmico desenvolvido para a disciplina de Engenharia de Software / Desenvolvimento Web. Trata-se de um sistema de gerenciamento de chamados de suporte de TI no estilo **Kanban**, batizado de **"Seu Chamado"**.
+Este é um projeto acadêmico de engenharia web desenvolvido para a disciplina de **Engenharia de Software, Interface Homem-Computador (IHC) e Usabilidade**. O sistema gerencia solicitações de suporte de tecnologia através de um quadro visual **Kanban**, implementando conceitos práticos de controle de acessos, segurança, persistência relacional e usabilidade profissional.
 
-O projeto foi projetado com foco em **usabilidade (Heurísticas de Jakob Nielsen)**, **acessibilidade (diretrizes de contraste)** e **portabilidade**, utilizando contêineres Docker para facilitar a execução sem necessidade de instalações manuais de banco de dados.
-
----
-
-## 🚀 Tecnologias Utilizadas
-
-O projeto adota uma arquitetura unificada e leve:
-* **Frontend:** HTML5, CSS3 (variáveis nativas, animações de elevação e responsividade em Grid/Flexbox) e JavaScript (Vanilla JS puro para interações dinâmicas e consumo de API).
-* **Backend:** Node.js com Express para fornecimento de APIs REST e arquivos estáticos.
-* **Banco de Dados:** PostgreSQL 15 para persistência dos dados de acessos e chamados.
-* **Autenticação:** JWT (JSON Web Tokens) armazenados em HTTP-Only Cookies (segurança contra ataques XSS).
-* **Containerização:** Docker e Docker Compose.
+O projeto adota ferramentas fundamentais da web (**HTML, CSS e JavaScript puros**) no frontend, demonstrando que a aplicação rigorosa de boas práticas de design e arquitetura independe do uso de frameworks complexos.
 
 ---
 
-## 🛠️ Arquitetura do Banco de Dados
+## 🚀 Tecnologias e Dependências
 
-O banco de dados é inicializado automaticamente com as tabelas de Usuários e Chamados. O diagrama abaixo representa o relacionamento lógico entre as tabelas:
+### Frontend (Vanilla)
+* **HTML5:** Semântica nativa para acessibilidade estrutural.
+* **CSS3:** Paleta corporativa sob medida (Light Mode), layouts flexíveis (Flexbox e CSS Grid) e animações suaves de transição.
+* **JavaScript (ES6):** Manipulação de DOM nativa, requisições Fetch assíncronas e controle da API HTML5 de Drag and Drop.
+* **Remix Icon CDN:** Biblioteca de ícones vetoriais modernos e minimalistas.
 
-```mermaid
-erDiagram
-    USERS {
-        SERIAL id PK
-        VARCHAR name "Nome do Usuário"
-        VARCHAR email "E-mail Único"
-        VARCHAR password_hash "Senha Criptografada"
-        VARCHAR role "Perfil: 'client' ou 'tech'"
-        TIMESTAMP created_at "Data de Cadastro"
-    }
-    TICKETS {
-        SERIAL id PK
-        VARCHAR title "Título/Assunto"
-        TEXT description "Descrição do problema"
-        VARCHAR status "todo | in_progress | review | done"
-        VARCHAR priority "low | medium | high"
-        VARCHAR category "hardware | software | network | other"
-        INT created_by FK "Criador (users.id)"
-        INT assigned_to FK "Técnico Responsável (users.id)"
-        TIMESTAMP created_at "Data de Abertura"
-        TIMESTAMP updated_at "Data de Atualização"
-    }
-    USERS ||--o{ TICKETS : "abre"
-    USERS ||--o{ TICKETS : "é designado para"
-```
+### Backend (Node.js)
+* **Express:** Roteamento de APIs REST e fornecimento de recursos estáticos.
+* **PG (node-postgres):** Pool de conexões e execução de queries SQL no PostgreSQL.
+* **Bcryptjs:** Criptografia unidirecional com salting para segurança de senhas de usuários.
+* **JSON Web Token (JWT):** Geração de assinaturas criptografadas de sessão.
+* **Cookie Parser:** Leitura segura de tokens de sessão enviados via cabeçalhos HTTP.
+* **Dotenv:** Gerenciamento isolado de variáveis de ambiente.
+
+### Banco de Dados & Infraestrutura
+* **PostgreSQL 15:** Banco de dados relacional.
+* **Docker & Docker Compose:** Containerização e orquestração do ambiente completo.
 
 ---
 
 ## 🧠 Heurísticas de Usabilidade Aplicadas (Jakob Nielsen)
 
-O projeto incorpora os seguintes conceitos fundamentais de IHC (Interação Humano-Computador):
+O design e fluxo do "Seu Chamado" foram projetados inteiramente em cima das **10 Heurísticas de Jakob Nielsen**, com destaque para a prevenção e tratamento amigável de erros:
 
 1. **Visibilidade do status do sistema (Heurística #1):**
-   * Contadores dinâmicos no topo de cada coluna do Kanban indicam o número de chamados em tempo real.
-   * Modificações no status do chamado via drag-and-drop geram atualizações de interface otimistas imediatas.
-2. **Compatibilidade entre o sistema e o mundo real (Heurística #2):**
-   * A divisão de colunas usa nomenclaturas comuns do suporte de TI (*Pendentes*, *Em Atendimento*, *Em Revisão*, *Concluídos*).
-   * Uso de ícones semânticos da biblioteca Remix Icons para representar prioridades e categorias de chamados.
+   * Contadores numéricos dinâmicos no cabeçalho das colunas do Kanban atualizam o volume de chamados na hora.
+   * Transições visuais imediatas com alteração da cor de fundo da coluna do Kanban durante o arraste do cartão de chamado.
+   * Mensagens de alerta no topo do painel identificam o perfil logado e as ações permitidas.
+2. **Compatibilidade do sistema com o mundo real (Heurística #2):**
+   * Nomenclaturas reais do setor de tecnologia (Pendente, Em Atendimento, Em Revisão, Concluído).
+   * Ícones intuitivos indicando prioridades (Alta/Média/Baixa) e categorias de chamados (Hardware, Software, Redes).
 3. **Controle e liberdade do usuário (Heurística #3):**
-   * Opções visuais claras para fechar janelas modais, cancelar a criação de chamados ou reverter o status de forma rápida.
+   * Botões explícitos para cancelar aberturas de chamados.
+   * Botão de exclusão para remover chamados criados incorretamente (disponível para técnicos ou o próprio criador).
 4. **Consistência e padrões (Heurística #4):**
-   * Todos os botões, inputs e caixas de alerta seguem o mesmo padrão geométrico, de cores e espaçamentos declarados globalmente no arquivo `style.css`.
-5. **Reconhecimento em vez de memorização (Heurística #6):**
-   * Ao criar ou editar chamados, os usuários são listados dinamicamente em um menu de seleção. O usuário não precisa se lembrar de IDs ou e-mails específicos.
-6. **Prevenção de erros e recuperação (Heurísticas #5 e #9):**
-   * Validação em tempo real de inputs e alertas visuais estilizados caso o servidor retorne erros (ex: e-mail duplicado, senhas fracas).
+   * Botões primários, secundários e inputs seguem a mesma identidade de bordas sólidas, arredondamentos (8px) e tipografia Outfit/Inter.
+5. **Prevenção de erros (Heurística #5):**
+   * **Submit Lock:** O botão "Confirmar Abertura" inicia bloqueado (`disabled`) e só é liberado quando o título tem no mínimo 5 caracteres e a descrição 10.
+   * **Aviso de Descarte:** Se o usuário preencher o formulário de abertura e tentar fechar a janela (clicando no Cancelar, no fechar `X` ou fora do modal), o sistema exibe uma confirmação para evitar a perda acidental do rascunho.
+6. **Reconhecimento em vez de memorização (Heurística #6):**
+   * Dropdown dinâmico para atribuição de técnicos de suporte. O usuário escolhe a partir de uma lista visual em vez de precisar lembrar e digitar o e-mail ou código do técnico.
+7. **Flexibilidade e eficiência de uso (Heurística #7):**
+   * Técnicos podem arrastar cartões de chamados diretamente no painel Kanban.
+   * Usuários comuns (Clientes) visualizam o painel com indicadores de cadeado e podem alterar o status do chamado selecionando uma caixa de opções dentro do modal de detalhes, adaptando a eficiência ao perfil de acesso.
+8. **Estética e design minimalista (Heurística #8):**
+   * Visual "Corporate Light Mode" limpo, livre de degradês de neon brilhantes ou efeitos transparentes. Foco total em dados legíveis e bordas discretas.
+9. **Ajuda os usuários a reconhecerem, diagnosticarem e recuperarem-se de erros (Heurística #9):**
+   * **Validação por Foco de Saída (Blur):** As mensagens de erro e as bordas vermelhas do formulário só aparecem se o usuário interagir e sair do campo deixando-o incompleto. Não há alertas pulando na tela enquanto o usuário digita.
+10. **Ajuda e documentação (Heurística #10):**
+    * Placeholders explicativos e exemplos dentro dos campos de texto (ex: `Ex: Monitor piscando, Falha na VPN...`).
 
 ---
 
-## 📋 Diferenciação de Perfis (Roles)
+## 📋 Perfis de Acesso (Roles)
 
-Para simular o cenário real de uma central de chamados:
-* **Cliente (Funcionário comum):** Pode criar novos chamados. Visualiza o quadro Kanban em modo leitura para acompanhar o andamento. Pode atualizar o status ou excluir **apenas os chamados criados por ele** usando o painel de detalhes.
-* **Técnico de TI (Suporte):** Tem controle administrativo do Kanban. Pode arrastar qualquer chamado entre as colunas, atribuir chamados a si mesmo ou a outros membros e excluir chamados da fila.
-
----
-
-## 📦 Como Executar o Projeto
-
-### Pré-requisitos
-* Ter o **Docker** e **Docker Compose** instalados na máquina.
-
-### Executando com Docker (Recomendado)
-1. Certifique-se de que o **Docker Desktop** está aberto e ativo.
-2. No terminal da pasta raiz do projeto, execute:
-   ```bash
-   docker-compose up --build
-   ```
-3. Acesse no seu navegador: **[http://localhost:3000](http://localhost:3000)**.
-
-> **💡 Conta de Teste Pré-Configurada:**
-> Se o banco de dados for iniciado pela primeira vez, um técnico padrão será criado automaticamente para testes imediatos:
-> * **E-mail:** `suporte@seuchamado.com.br`
-> * **Senha:** `123456`
+* **Cliente:** Perfil voltado para funcionários da empresa que abrem chamados.
+  * O quadro Kanban fica em modo leitura com um ícone de cadeado.
+  * Pode abrir novos chamados.
+  * Pode editar o status ou excluir **apenas os chamados criados por ele mesmo**.
+* **Técnico de TI:** Perfil administrativo para a equipe de suporte.
+  * Possui permissão completa de movimentação dos cartões via drag-and-drop.
+  * Pode atribuir responsáveis aos chamados e atualizar o status de qualquer chamado.
+  * Pode excluir chamados do quadro.
 
 ---
 
-## 🔌 Documentação Básica da API (Endpoints)
+## 🛠️ Modelagem de Banco de Dados
 
-### Autenticação (`/api/auth`)
-* `POST /api/auth/register` - Cria uma nova conta.
-* `POST /api/auth/login` - Valida credenciais e gera o token de acesso.
-* `POST /api/auth/logout` - Limpa o cookie de sessão.
-* `GET /api/auth/me` - Retorna os dados do usuário autenticado no momento.
+O PostgreSQL cria automaticamente a seguinte modelagem na inicialização do serviço:
 
-### Usuários (`/api/users`)
-* `GET /api/users` - Retorna a lista de usuários cadastrados (id, nome, email).
-
-### Chamados (`/api/tickets`)
-* `GET /api/tickets` - Retorna todos os chamados da empresa com os nomes do criador e técnico responsável.
-* `POST /api/tickets` - Cria um novo chamado.
-* `PUT /api/tickets/:id` - Atualiza todos os dados de um chamado.
-* `PATCH /api/tickets/:id/status` - Atualiza especificamente o status do chamado (chamada otimizada para o drag-and-drop).
-* `DELETE /api/tickets/:id` - Exclui permanentemente um chamado.
-
----
-
-## 📁 Estrutura do Projeto
-
-```text
-seu-chamado/
-├── .impeccable/         # Configurações do painel visual do design system
-├── public/              # Arquivos públicos servidos ao frontend
-│   ├── css/
-│   │   └── style.css    # Paleta de cores, tipografia, regras CSS e transições
-│   ├── js/
-│   │   ├── auth.js      # Lógica de login, registro e checagem de cookies
-│   │   └── kanban.js    # Controle do Kanban (Drag/Drop, render e filtros)
-│   ├── index.html       # Tela de login e cadastro (Tab switcher)
-│   └── dashboard.html   # Espaço de trabalho Kanban e modais de chamados
-├── db.js                # Módulo de conexão com banco de dados e migrações SQL
-├── server.js            # Arquivo principal do servidor Node.js/Express e rotas
-├── Dockerfile           # Instruções de montagem da imagem docker do app
-├── docker-compose.yml   # Orquestração do banco e app
-├── .env.example         # Exemplo de configurações de rede e segurança
-├── PRODUCT.md           # Definição e objetivos de negócio
-└── DESIGN.md            # Regras e identidade visual detalhada
+```mermaid
+erDiagram
+    USERS {
+        SERIAL id PK
+        VARCHAR name
+        VARCHAR email UNIQUE
+        VARCHAR password_hash
+        VARCHAR role "client | tech"
+        TIMESTAMP created_at
+    }
+    TICKETS {
+        SERIAL id PK
+        VARCHAR title
+        TEXT description
+        VARCHAR status "todo | in_progress | review | done"
+        VARCHAR priority "low | medium | high"
+        VARCHAR category "hardware | software | network | other"
+        INT created_by FK "users.id"
+        INT assigned_to FK "users.id"
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    USERS ||--o{ TICKETS : "abre"
+    USERS ||--o{ TICKETS : "resolve"
 ```
+
+---
+
+## 🔌 Documentação da API REST
+
+### 1. Autenticação (`/api/auth`)
+
+#### Cadastro de Usuário
+* **Rota:** `POST /api/auth/register`
+* **JSON de Entrada:**
+  ```json
+  {
+    "name": "João Silva",
+    "email": "joao@empresa.com",
+    "role": "client",
+    "password": "senha_secreta"
+  }
+  ```
+* **Status de Retorno:** `201 Created` ou `400 Bad Request`
+
+#### Login
+* **Rota:** `POST /api/auth/login`
+* **JSON de Entrada:**
+  ```json
+  {
+    "email": "joao@empresa.com",
+    "password": "senha_secreta"
+  }
+  ```
+* **Retorno:** Grava cookie seguro `token` com JWT e retorna `200 OK`.
+
+#### Validar Sessão
+* **Rota:** `GET /api/auth/me`
+* **Retorno:** `200 OK` contendo os dados do usuário autenticado no cookie ou `401 Unauthorized` se a sessão for inválida.
+
+---
+
+### 2. Chamados (`/api/tickets`)
+
+#### Criar Chamado
+* **Rota:** `POST /api/tickets`
+* **JSON de Entrada:**
+  ```json
+  {
+    "title": "Falha na Rede Wi-Fi",
+    "description": "O sinal cai constantemente na sala 4.",
+    "priority": "high",
+    "category": "network",
+    "assigned_to": null
+  }
+  ```
+* **Retorno:** `201 Created`
+
+#### Listar Todos
+* **Rota:** `GET /api/tickets`
+* **Retorno:** `200 OK` contendo um array de chamados vinculando os nomes do criador e do técnico atribuído.
+
+#### Atualizar Chamado
+* **Rota:** `PUT /api/tickets/:id`
+* **JSON de Entrada:** Todos os campos editáveis.
+* **Retorno:** `200 OK`
+
+#### Atualizar Status (Drag-and-Drop)
+* **Rota:** `PATCH /api/tickets/:id/status`
+* **JSON de Entrada:**
+  ```json
+  {
+    "status": "in_progress"
+  }
+  ```
+* **Retorno:** `200 OK`
+
+---
+
+## ⚙️ Como Rodar o Projeto
+
+### Método 1: Usando Docker (Recomendado)
+Certifique-se de que o **Docker Desktop** esteja ativo e rodando. Na pasta raiz do projeto, execute:
+
+```bash
+# Derruba volumes antigos (caso existam) e limpa cache
+docker-compose down -v
+
+# Compila a imagem Node e sobe os serviços
+docker-compose up --build
+```
+Acesse no navegador: **[http://localhost:3000](http://localhost:3000)**.
+
+---
+
+### Método 2: Execução Local (Sem Docker)
+Caso queira rodar o Node localmente conectado ao seu PostgreSQL do Windows:
+
+1. **Configure o banco de dados:** No seu PostgreSQL local, crie um banco chamado `seu_chamado_db`.
+2. **Configure as Variáveis de Ambiente:** Abra o arquivo `.env` na raiz e altere:
+   ```env
+   DB_HOST=localhost
+   DB_USER=seu_usuario_postgres
+   DB_PASSWORD=sua_senha_postgres
+   DB_NAME=seu_chamado_db
+   ```
+3. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+4. **Inicie o servidor local:**
+   ```bash
+   # Inicia com watch automático (recarrega ao salvar arquivos)
+   npm run dev
+   ```
+5. Acesse no navegador: **[http://localhost:3000](http://localhost:3000)**.
