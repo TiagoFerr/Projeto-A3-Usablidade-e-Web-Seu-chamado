@@ -1,15 +1,15 @@
 # Relatório de Projeto Acadêmico (Avaliação A3)
 ## Sistema "Seu Chamado" - Kanban de Suporte de TI
 
-Este documento constitui o **Relatório Completo de Projeto** da aplicação **Seu Chamado**, desenvolvida para a avaliação **A3** nas disciplinas correlatas de **Engenharia de Software, Interface Homem-Computador (IHC) e Desenvolvimento Web / Usabilidade**.
+Este documento constitui o **Relatório Completo de Projeto** da aplicação **Seu Chamado**, desenvolvida para a avaliação **A3** na disciplina de **Usabilidade, desenvolvimento web, mobile e jogos**.
 
 ---
 
 ## 👨‍💻 Identificação do Projeto
 * **Nome do Projeto:** Seu Chamado
-* **Objetivo:** Sistema de Chamados de TI estilo Kanban com controle de acessos semânticos e foco em usabilidade.
+* **Disciplina:** Usabilidade, desenvolvimento web, mobile e jogos
+* **Objetivo Geral:** Aplicar conceitos de Usabilidade, Design de Interfaces, prototipagem e implementação técnica de sistemas web.
 * **Autor:** Tiago Ferreira (GitHub: [@TiagoFerr](https://github.com/TiagoFerr))
-* **Contexto:** Projeto Prático Acadêmico (Avaliação A3) - Foco em IHC, Usabilidade Web e Princípios de Design Limpo.
 * **Tecnologia Principal:** Vanilla Web Stack (HTML/CSS/JS puros) no frontend, Node.js no backend e PostgreSQL como banco de dados.
 
 ---
