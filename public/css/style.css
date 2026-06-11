@@ -1096,9 +1096,6 @@ textarea.form-input {
 }
 
 
-/* ==========================================================================
-   ENRIQUECIMENTO: NOVOS COMPONENTES E ESTILOS (@impeccable UI/UX)
-   ========================================================================== */
 
 /* 1. Modo Escuro (Dark Mode System) */
 .dark-mode {
@@ -1656,9 +1653,6 @@ textarea.form-input {
   color: #fff;
 }
 
-/* ==========================================================================
-   NAVEGAÇÃO POR ABAS E VISUALIZAÇÃO DISTRIBUÍDA
-   ========================================================================== */
 
 /* Barra de Navegação por Abas */
 .tabs-nav {
@@ -1853,3 +1847,79 @@ textarea.form-input {
   background: var(--color-neutral-surface);
   border-color: var(--color-neutral-border);
 }
+
+/*Responsividade*/
+.modal-overlay {
+  padding: 16px;
+}
+
+@media (max-width: 640px) {
+  .navbar .user-info {
+    display: none;
+  }
+  
+  .navbar .btn-logout {
+    font-size: 0;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .navbar .btn-logout i {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  
+  .nav-actions {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .board-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .board-controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .board-controls .search-bar,
+  .board-controls .filter-select,
+  .board-controls .btn-new-ticket {
+    width: 100% !important;
+  }
+  
+  .search-bar input {
+    width: 100% !important;
+  }
+  
+  .search-bar input:focus {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .tabs-nav {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    gap: 4px;
+  }
+  
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+}
+

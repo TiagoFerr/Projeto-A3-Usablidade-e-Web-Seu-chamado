@@ -528,9 +528,9 @@ function openDetailsModal(ticket) {
   
   // Status layout
   const statusLabels = { todo: 'Pendente', in_progress: 'Em Atendimento', review: 'Em Revisão', done: 'Concluído' };
-  const detailStatus = document.getElementById('detailStatus');
-  detailStatus.innerText = statusLabels[ticket.status] || ticket.status;
-  detailStatus.className = `detail-value ticket-badge priority-${ticket.status === 'todo' ? 'low' : ticket.status === 'done' ? 'low' : 'medium'}`; // quick styling
+  const detailStatusText = document.getElementById('detailStatusText');
+  detailStatusText.innerText = statusLabels[ticket.status] || ticket.status;
+  detailStatusText.className = `detail-value ticket-badge priority-${ticket.status === 'todo' ? 'low' : ticket.status === 'done' ? 'low' : 'medium'}`; // quick styling
   
   // Priority Layout
   const priorityLabels = { low: 'Baixa', medium: 'Média', high: 'Alta' };
@@ -584,19 +584,15 @@ function openDetailsModal(ticket) {
   }
 
   // Move status dropdown for clients (since they cannot drag and drop)
-  const clientMoveSelector = document.getElementById('clientMoveSelector');
   const detailStatusSelect = document.getElementById('detailStatusSelect');
   
-  if (isTech) {
-    // Techs can use drag and drop, but we can also display status switcher
-    clientMoveSelector.style.display = 'flex';
-    detailStatusSelect.value = ticket.status;
-  } else if (isCreator) {
-    // Client who created it can move it (e.g. to mark as resolved or ask for review)
-    clientMoveSelector.style.display = 'flex';
+  if (isTech || isCreator) {
+    detailStatusText.style.display = 'none';
+    detailStatusSelect.style.display = 'inline-block';
     detailStatusSelect.value = ticket.status;
   } else {
-    clientMoveSelector.style.display = 'none';
+    detailStatusText.style.display = 'inline-block';
+    detailStatusSelect.style.display = 'none';
   }
 
   // Toggle Subtasks Form visibility based on role
@@ -677,8 +673,11 @@ async function handleStatusChange(event) {
   
   // Also update badge color inside modal
   const statusLabels = { todo: 'Pendente', in_progress: 'Em Atendimento', review: 'Em Revisão', done: 'Concluído' };
-  const detailStatus = document.getElementById('detailStatus');
-  detailStatus.innerText = statusLabels[newStatus];
+  const detailStatusText = document.getElementById('detailStatusText');
+  if (detailStatusText) {
+    detailStatusText.innerText = statusLabels[newStatus];
+    detailStatusText.className = `detail-value ticket-badge priority-${newStatus === 'todo' ? 'low' : newStatus === 'done' ? 'low' : 'medium'}`;
+  }
 
   try {
     const response = await fetch(`${TICKETS_API}/${activeDetailsTicketId}/status`, {
@@ -698,7 +697,10 @@ async function handleStatusChange(event) {
     ticket.status = originalStatus;
     renderBoard();
     document.getElementById('detailStatusSelect').value = originalStatus;
-    detailStatus.innerText = statusLabels[originalStatus];
+    if (detailStatusText) {
+      detailStatusText.innerText = statusLabels[originalStatus];
+      detailStatusText.className = `detail-value ticket-badge priority-${originalStatus === 'todo' ? 'low' : originalStatus === 'done' ? 'low' : 'medium'}`;
+    }
   }
 }
 
