@@ -1853,7 +1853,11 @@ textarea.form-input {
   padding: 16px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+  
   .navbar .user-info {
     display: none;
   }
@@ -1877,9 +1881,7 @@ textarea.form-input {
   .nav-actions {
     gap: 10px;
   }
-}
 
-@media (max-width: 600px) {
   .board-header {
     flex-direction: column;
     align-items: stretch;
@@ -1905,21 +1907,71 @@ textarea.form-input {
   .search-bar input:focus {
     width: 100% !important;
   }
-}
 
-@media (max-width: 640px) {
   .tabs-nav {
     overflow-x: auto;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 6px;
     gap: 4px;
+    scrollbar-width: none;
+  }
+  
+  .tabs-nav::-webkit-scrollbar {
+    display: none;
   }
   
   .tab-btn {
     flex-shrink: 0;
     padding: 8px 12px;
     font-size: 0.8rem;
+  }
+  
+  .modal-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .modal-left-col {
+    order: 2;
+  }
+
+  .modal-right-col {
+    order: 1;
+  }
+}
+
+@media (max-width: 580px) {
+  .kanban-column {
+    min-height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-row {
+    flex-direction: column;
+    gap: 4px;
+    align-items: stretch;
+  }
+  
+  .detail-label {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  
+  .detail-value {
+    width: 100%;
+  }
+
+  .ticket-badges {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .global-timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
   }
 }
 
