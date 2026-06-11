@@ -183,7 +183,24 @@ app.post('/api/tickets', authenticateToken, async (req, res) => {
       ]
     );
 
-    res.status(201).json({ message: 'Chamado criado com sucesso!', ticket: result.rows[0] });
+    const ticket = result.rows[0];
+
+    // Log automatic activity for ticket creation
+    await db.query(
+      'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+      [ticket.id, req.user.id, 'Chamado criado']
+    );
+
+    if (assignedVal) {
+      const assigneeQuery = await db.query('SELECT name FROM users WHERE id = $1', [assignedVal]);
+      const assigneeName = assigneeQuery.rows[0] ? assigneeQuery.rows[0].name : 'Desconhecido';
+      await db.query(
+        'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+        [ticket.id, req.user.id, `Responsável inicial definido como ${assigneeName}`]
+      );
+    }
+
+    res.status(201).json({ message: 'Chamado criado com sucesso!', ticket });
   } catch (err) {
     console.error('Create ticket error:', err);
     res.status(500).json({ error: 'Erro ao criar chamado.' });
@@ -205,6 +222,7 @@ app.put('/api/tickets/:id', authenticateToken, async (req, res) => {
     if (ticketCheck.rows.length === 0) {
       return res.status(404).json({ error: 'Chamado não encontrado.' });
     }
+    const oldTicket = ticketCheck.rows[0];
 
     const result = await db.query(
       `UPDATE tickets 
@@ -222,7 +240,53 @@ app.put('/api/tickets/:id', authenticateToken, async (req, res) => {
       ]
     );
 
-    res.json({ message: 'Chamado atualizado com sucesso!', ticket: result.rows[0] });
+    const newTicket = result.rows[0];
+
+    // Log priority change
+    if (oldTicket.priority !== newTicket.priority) {
+      const priorityLabels = { low: 'Baixa', medium: 'Média', high: 'Alta' };
+      await db.query(
+        'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+        [id, req.user.id, `Prioridade alterada de ${priorityLabels[oldTicket.priority] || oldTicket.priority} para ${priorityLabels[newTicket.priority] || newTicket.priority}`]
+      );
+    }
+    
+    // Log category change
+    if (oldTicket.category !== newTicket.category) {
+      const categoryLabels = { hardware: 'Hardware', software: 'Software', network: 'Rede', other: 'Geral' };
+      await db.query(
+        'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+        [id, req.user.id, `Categoria alterada de ${categoryLabels[oldTicket.category] || oldTicket.category} para ${categoryLabels[newTicket.category] || newTicket.category}`]
+      );
+    }
+
+    // Log status change
+    if (oldTicket.status !== newTicket.status) {
+      const statusLabels = { todo: 'Pendente', in_progress: 'Em Atendimento', review: 'Em Revisão', done: 'Concluído' };
+      await db.query(
+        'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+        [id, req.user.id, `Status alterado de ${statusLabels[oldTicket.status] || oldTicket.status} para ${statusLabels[newTicket.status] || newTicket.status}`]
+      );
+    }
+
+    // Log assignee change
+    if (oldTicket.assigned_to !== newTicket.assigned_to) {
+      if (newTicket.assigned_to) {
+        const assigneeQuery = await db.query('SELECT name FROM users WHERE id = $1', [newTicket.assigned_to]);
+        const assigneeName = assigneeQuery.rows[0] ? assigneeQuery.rows[0].name : 'Desconhecido';
+        await db.query(
+          'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+          [id, req.user.id, `Responsável alterado para ${assigneeName}`]
+        );
+      } else {
+        await db.query(
+          'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+          [id, req.user.id, 'Responsável removido (não atribuído)']
+        );
+      }
+    }
+
+    res.json({ message: 'Chamado atualizado com sucesso!', ticket: newTicket });
   } catch (err) {
     console.error('Update ticket error:', err);
     res.status(500).json({ error: 'Erro ao atualizar chamado.' });
@@ -243,6 +307,7 @@ app.patch('/api/tickets/:id/status', authenticateToken, async (req, res) => {
     if (ticketCheck.rows.length === 0) {
       return res.status(404).json({ error: 'Chamado não encontrado.' });
     }
+    const oldStatus = ticketCheck.rows[0].status;
 
     const result = await db.query(
       `UPDATE tickets 
@@ -251,6 +316,14 @@ app.patch('/api/tickets/:id/status', authenticateToken, async (req, res) => {
        RETURNING *`,
       [status, id]
     );
+
+    if (oldStatus !== status) {
+      const statusLabels = { todo: 'Pendente', in_progress: 'Em Atendimento', review: 'Em Revisão', done: 'Concluído' };
+      await db.query(
+        'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+        [id, req.user.id, `Status alterado de ${statusLabels[oldStatus] || oldStatus} para ${statusLabels[status] || status}`]
+      );
+    }
 
     res.json({ message: 'Status do chamado atualizado!', ticket: result.rows[0] });
   } catch (err) {
@@ -275,6 +348,222 @@ app.delete('/api/tickets/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Erro ao excluir chamado.' });
   }
 });
+
+// GET latest global activities
+app.get('/api/activities', authenticateToken, async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT a.*, u.name as user_name, u.role as user_role, t.title as ticket_title
+      FROM ticket_activities a
+      LEFT JOIN users u ON a.user_id = u.id
+      LEFT JOIN tickets t ON a.ticket_id = t.id
+      ORDER BY a.created_at DESC
+      LIMIT 50
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Fetch all activities error:', err);
+    res.status(500).json({ error: 'Erro ao buscar atividades globais.' });
+  }
+});
+
+// Rotas de Comentários, Atividades e Subtarefas
+// GET comments for a ticket
+app.get('/api/tickets/:id/comments', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await db.query(`
+      SELECT c.*, u.name as user_name, u.role as user_role
+      FROM ticket_comments c
+      JOIN users u ON c.user_id = u.id
+      WHERE c.ticket_id = $1
+      ORDER BY c.created_at ASC
+    `, [id]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Fetch comments error:', err);
+    res.status(500).json({ error: 'Erro ao buscar comentários do chamado.' });
+  }
+});
+
+// POST a comment on a ticket
+app.post('/api/tickets/:id/comments', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+
+    if (!content || content.trim().length === 0) {
+      return res.status(400).json({ error: 'O conteúdo do comentário não pode estar vazio.' });
+    }
+
+    const ticketCheck = await db.query('SELECT * FROM tickets WHERE id = $1', [id]);
+    if (ticketCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Chamado não encontrado.' });
+    }
+
+    const result = await db.query(
+      'INSERT INTO ticket_comments (ticket_id, user_id, content) VALUES ($1, $2, $3) RETURNING *',
+      [id, req.user.id, content.trim()]
+    );
+
+    // Fetch the new comment with user details
+    const newComment = await db.query(`
+      SELECT c.*, u.name as user_name, u.role as user_role
+      FROM ticket_comments c
+      JOIN users u ON c.user_id = u.id
+      WHERE c.id = $1
+    `, [result.rows[0].id]);
+
+    // Also register an activity log for the comment
+    await db.query(
+      'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+      [id, req.user.id, 'Adicionou um comentário']
+    );
+
+    res.status(201).json(newComment.rows[0]);
+  } catch (err) {
+    console.error('Create comment error:', err);
+    res.status(500).json({ error: 'Erro ao enviar comentário.' });
+  }
+});
+
+// GET activities for a ticket
+app.get('/api/tickets/:id/activities', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await db.query(`
+      SELECT a.*, u.name as user_name, u.role as user_role
+      FROM ticket_activities a
+      LEFT JOIN users u ON a.user_id = u.id
+      WHERE a.ticket_id = $1
+      ORDER BY a.created_at DESC
+    `, [id]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Fetch activities error:', err);
+    res.status(500).json({ error: 'Erro ao buscar histórico de atividades.' });
+  }
+});
+
+// GET subtasks for a ticket
+app.get('/api/tickets/:id/subtasks', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await db.query(
+      'SELECT * FROM ticket_subtasks WHERE ticket_id = $1 ORDER BY created_at ASC',
+      [id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Fetch subtasks error:', err);
+    res.status(500).json({ error: 'Erro ao buscar subtarefas do chamado.' });
+  }
+});
+
+// POST a subtask on a ticket (Techs only)
+app.post('/api/tickets/:id/subtasks', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title } = req.body;
+
+    if (req.user.role !== 'tech') {
+      return res.status(403).json({ error: 'Apenas técnicos podem gerenciar subtarefas.' });
+    }
+
+    if (!title || title.trim().length === 0) {
+      return res.status(400).json({ error: 'O título da subtarefa não pode estar vazio.' });
+    }
+
+    const ticketCheck = await db.query('SELECT * FROM tickets WHERE id = $1', [id]);
+    if (ticketCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Chamado não encontrado.' });
+    }
+
+    const result = await db.query(
+      'INSERT INTO ticket_subtasks (ticket_id, title) VALUES ($1, $2) RETURNING *',
+      [id, title.trim()]
+    );
+
+    // Also register an activity log for the subtask
+    await db.query(
+      'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+      [id, req.user.id, `Adicionou subtarefa: "${title.trim()}"`]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Create subtask error:', err);
+    res.status(500).json({ error: 'Erro ao criar subtarefa.' });
+  }
+});
+
+// PUT (toggle) a subtask (Techs only)
+app.put('/api/tickets/:id/subtasks/:subtaskId', authenticateToken, async (req, res) => {
+  try {
+    const { id, subtaskId } = req.params;
+    const { is_completed } = req.body;
+
+    if (req.user.role !== 'tech') {
+      return res.status(403).json({ error: 'Apenas técnicos podem gerenciar subtarefas.' });
+    }
+
+    const subtaskCheck = await db.query('SELECT * FROM ticket_subtasks WHERE id = $1 AND ticket_id = $2', [subtaskId, id]);
+    if (subtaskCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Subtarefa não encontrada.' });
+    }
+
+    const result = await db.query(
+      'UPDATE ticket_subtasks SET is_completed = $1 WHERE id = $2 RETURNING *',
+      [!!is_completed, subtaskId]
+    );
+
+    const subtask = result.rows[0];
+    const statusText = subtask.is_completed ? 'Concluiu' : 'Desmarcou';
+
+    // Also register an activity log for the subtask toggle
+    await db.query(
+      'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+      [id, req.user.id, `${statusText} a subtarefa: "${subtask.title}"`]
+    );
+
+    res.json(subtask);
+  } catch (err) {
+    console.error('Toggle subtask error:', err);
+    res.status(500).json({ error: 'Erro ao atualizar subtarefa.' });
+  }
+});
+
+// DELETE a subtask (Techs only)
+app.delete('/api/tickets/:id/subtasks/:subtaskId', authenticateToken, async (req, res) => {
+  try {
+    const { id, subtaskId } = req.params;
+
+    if (req.user.role !== 'tech') {
+      return res.status(403).json({ error: 'Apenas técnicos podem gerenciar subtarefas.' });
+    }
+
+    const subtaskCheck = await db.query('SELECT * FROM ticket_subtasks WHERE id = $1 AND ticket_id = $2', [subtaskId, id]);
+    if (subtaskCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Subtarefa não encontrada.' });
+    }
+
+    const subtask = subtaskCheck.rows[0];
+
+    await db.query('DELETE FROM ticket_subtasks WHERE id = $1', [subtaskId]);
+
+    // Also register an activity log for the subtask deletion
+    await db.query(
+      'INSERT INTO ticket_activities (ticket_id, user_id, action_desc) VALUES ($1, $2, $3)',
+      [id, req.user.id, `Removeu a subtarefa: "${subtask.title}"`]
+    );
+
+    res.json({ message: 'Subtarefa excluída com sucesso.' });
+  } catch (err) {
+    console.error('Delete subtask error:', err);
+    res.status(500).json({ error: 'Erro ao excluir subtarefa.' });
+  }
+});
+
 
 // Rotas para servir páginas estáticas do frontend
 app.get('/login', (req, res) => {

@@ -67,6 +67,39 @@ async function initDatabase() {
     `);
     console.log('Verified/Created "tickets" table.');
 
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS ticket_activities (
+        id SERIAL PRIMARY KEY,
+        ticket_id INT REFERENCES tickets(id) ON DELETE CASCADE,
+        user_id INT REFERENCES users(id) ON DELETE SET NULL,
+        action_desc VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('Verified/Created "ticket_activities" table.');
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS ticket_comments (
+        id SERIAL PRIMARY KEY,
+        ticket_id INT REFERENCES tickets(id) ON DELETE CASCADE,
+        user_id INT REFERENCES users(id) ON DELETE CASCADE,
+        content TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('Verified/Created "ticket_comments" table.');
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS ticket_subtasks (
+        id SERIAL PRIMARY KEY,
+        ticket_id INT REFERENCES tickets(id) ON DELETE CASCADE,
+        title VARCHAR(255) NOT NULL,
+        is_completed BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('Verified/Created "ticket_subtasks" table.');
+
     const usersCount = await client.query('SELECT count(*) FROM users');
     if (parseInt(usersCount.rows[0].count) === 0) {
       console.log('No users found. Creating default seed user...');

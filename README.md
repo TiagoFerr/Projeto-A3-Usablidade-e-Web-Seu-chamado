@@ -117,7 +117,7 @@ A aplicação utiliza uma arquitetura clássica **Monolítica Baseada em Serviç
 
 ## 🗄️ 6. Modelagem e Estrutura do Banco de Dados
 
-O banco de dados do projeto conta com duas entidades fortemente relacionadas:
+O banco de dados do projeto conta com uma modelagem relacional expandida para suportar as novas funcionalidades de controle de suporte:
 
 ```mermaid
 erDiagram
@@ -141,18 +141,62 @@ erDiagram
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
+    TICKET_ACTIVITIES {
+        SERIAL id PK
+        INT ticket_id FK "tickets.id"
+        INT user_id FK "users.id"
+        VARCHAR action_desc
+        TIMESTAMP created_at
+    }
+    TICKET_COMMENTS {
+        SERIAL id PK
+        INT ticket_id FK "tickets.id"
+        INT user_id FK "users.id"
+        TEXT content
+        TIMESTAMP created_at
+    }
+    TICKET_SUBTASKS {
+        SERIAL id PK
+        INT ticket_id FK "tickets.id"
+        VARCHAR title
+        BOOLEAN is_completed
+        TIMESTAMP created_at
+    }
     USERS ||--o{ TICKETS : "cria (created_by)"
     USERS ||--o{ TICKETS : "atribuido_a (assigned_to)"
+    TICKETS ||--o{ TICKET_ACTIVITIES : "possui"
+    USERS ||--o{ TICKET_ACTIVITIES : "registra"
+    TICKETS ||--o{ TICKET_COMMENTS : "possui"
+    USERS ||--o{ TICKET_COMMENTS : "escreve"
+    TICKETS ||--o{ TICKET_SUBTASKS : "contém"
 ```
 
 ### Auto-Migrações e Resiliência
 Para suportar o ambiente de containers Docker (onde o banco de dados pode demorar alguns segundos a mais para inicializar em relação à aplicação Node), o arquivo `db.js` implementa:
 1. **Lógica de Retry (Tentativas):** O backend tenta se conectar ao PostgreSQL até 6 vezes consecutivas com um intervalo de 5 segundos entre as tentativas antes de abortar o processo.
-2. **Auto-inicialização de Tabelas:** O script verifica a existência das tabelas `users` e `tickets`. Se não existirem, cria-as automaticamente e popula o banco de dados com dados de testes de início.
+2. **Auto-inicialização de Tabelas:** O script verifica a existência e cria automaticamente as tabelas `users`, `tickets`, `ticket_activities`, `ticket_comments` e `ticket_subtasks` caso não existam no banco de dados.
 
 ---
 
-## ⚙️ 7. Instruções para Executar o Projeto
+## 🎨 7. Novas Funcionalidades de Enriquecimento (IHC & Usabilidade)
+
+Para levar o sistema a um patamar corporativo profissional de usabilidade (@impeccable), foram integradas as seguintes melhorias guiadas pelas **Heurísticas de Nielsen**:
+
+1. **Navegação Distribuída por Abas (Tab Selector):** Para evitar a saturação de informações e manter o foco na tarefa atual, a interface principal foi distribuída em três abas:
+   * **Quadro Kanban:** Área limpa dedicada exclusivamente à triagem e fluxo de movimentação dos chamados.
+   * **Estatísticas & Relatórios:** Painel agregador com métricas gerais e gráficos de distribuição.
+   * **Histórico Geral:** Linha do tempo linear global com as últimas 50 ações registradas na base.
+   *(Heurística #8 - Estética e Design Minimalista / Heurística #7 - Flexibilidade e Eficiência)*.
+2. **Painel de Estatísticas e Métricas Expandido:** Exibe contadores do total de chamados, a taxa de resolução (%) e a distribuição das categorias, além de novos painéis dedicados à volumetria de chamados por **Prioridade** e por **Status** com barras de progresso dinâmicas de cores institucionais. *(Heurística #1 - Visibilidade do Status do Sistema)*.
+3. **Controle de SLA Dinâmico por Prioridade:** Os cartões do Kanban e o modal de detalhes exibem cronômetros de contagem regressiva para a resolução (Alta: 4h, Média: 24h, Baixa: 72h) com alertas estéticos de atraso ("SLA Estourado"). *(Heurística #1 - Visibilidade e Heurística #8 - Estética Minimalista)*.
+4. **Timeline de Atividades (Activity Log) & Histórico Geral:** Registra e renderiza um histórico completo de alterações ocorridas no chamado em ordem cronológica. Na aba "Histórico Geral", as atividades contam com links clicáveis que abrem instantaneamente os detalhes do chamado correspondente. *(Heurística #1 - Visibilidade e Heurística #2 - Compatibilidade)*.
+5. **Central de Comentários Interna:** Permite uma área de bate-papo entre o funcionário solicitante e o técnico responsável diretamente no modal de detalhes do chamado. *(Heurística #7 - Flexibilidade e Eficiência de Uso)*.
+6. **Checklist de Subtarefas Técnicas:** Exclusivo para técnicos, possibilita a decomposição do chamado em micro-tarefas interativas que podem ser marcadas ou deletadas, prevenindo o esquecimento de rotinas de suporte críticas. *(Heurística #5 - Prevenção de Erros e Heurística #6 - Reconhecimento)*.
+7. **Modo Escuro Sóbrio (Dark Mode):** Um alternador persistente (via `localStorage`) na navbar que altera dinamicamente as variáveis de design para um tema escuro e plano com bordas sólidas marcadas, atendendo a altos critérios de contraste de acessibilidade para uso contínuo sem fadiga ocular. *(Heurística #8 - Minimalismo & Acessibilidade)*.
+
+---
+
+## ⚙️ 8. Instruções para Executar o Projeto
 
 Você pode rodar o projeto de duas formas: usando Docker (ambiente isolado recomendado) ou instalando localmente na sua máquina.
 
@@ -197,7 +241,7 @@ Caso deseje rodar a aplicação diretamente no sistema operacional:
 
 ---
 
-## 🔑 8. Credenciais Pré-configuradas para Teste (Seed)
+## 🔑 9. Credenciais Pré-configuradas para Teste (Seed)
 
 Ao inicializar o banco de dados pela primeira vez, o sistema insere automaticamente uma conta com perfil de **Técnico de TI** para que você possa avaliar as funcionalidades de arrastar cartões e atribuir responsáveis imediatamente:
 
@@ -205,3 +249,4 @@ Ao inicializar o banco de dados pela primeira vez, o sistema insere automaticame
 * **Senha:** `123456`
 
 *(Você também pode se cadastrar livremente com qualquer e-mail no formulário da página inicial e selecionar se deseja o perfil de **Cliente** ou **Técnico**).*
+

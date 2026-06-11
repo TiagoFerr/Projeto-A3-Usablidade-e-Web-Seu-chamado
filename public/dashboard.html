@@ -18,6 +18,9 @@
           <i class="ri-ticket-2-line"></i> Seu Chamado
         </a>
         <div class="nav-actions">
+          <button class="btn-theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Alternar Tema">
+            <i class="ri-moon-line"></i>
+          </button>
           <!-- User info (Nielsen Heuristic #1) -->
           <div class="user-profile">
             <div class="user-avatar" id="navUserInitials">U</div>
@@ -34,110 +37,225 @@
     </header>
 
     <main class="container" style="flex-grow: 1;">
-      <!-- Board Header Controls -->
-      <section class="board-header">
-        <div class="board-title">
-          <h2>Painel de Chamados</h2>
-          <p id="boardSubtitle">Gerencie e resolva solicitações de TI no Kanban</p>
-        </div>
+      
+      <!-- Navegação por Abas (Tab Selector) -->
+      <nav class="tabs-nav">
+        <button class="tab-btn active" id="tabBtn-board" onclick="switchDashboardTab('board')">
+          <i class="ri-kanban-view"></i> Quadro Kanban
+        </button>
+        <button class="tab-btn" id="tabBtn-stats" onclick="switchDashboardTab('stats')">
+          <i class="ri-bar-chart-2-line"></i> Estatísticas & Relatórios
+        </button>
+        <button class="tab-btn" id="tabBtn-logs" onclick="switchDashboardTab('logs')">
+          <i class="ri-history-line"></i> Histórico Geral
+        </button>
+      </nav>
 
-        <div class="board-controls">
-          <!-- Search input (Nielsen Heuristic #7) -->
-          <div class="search-bar">
-            <i class="ri-search-line"></i>
-            <input type="text" id="searchFilter" placeholder="Pesquisar chamado..." oninput="applyFilters()">
+      <!-- ABA 1: QUADRO KANBAN -->
+      <div id="tab-board" class="tab-content active">
+        <!-- Board Header Controls -->
+        <section class="board-header">
+          <div class="board-title">
+            <h2>Painel de Chamados</h2>
+            <p id="boardSubtitle">Gerencie e resolva solicitações de TI no Kanban</p>
           </div>
 
-          <!-- Category filter -->
-          <select class="filter-select" id="categoryFilter" onchange="applyFilters()">
-            <option value="">Todas Categorias</option>
-            <option value="hardware">Hardware</option>
-            <option value="software">Software</option>
-            <option value="network">Rede</option>
-            <option value="other">Outros</option>
-          </select>
+          <div class="board-controls">
+            <!-- Search input (Nielsen Heuristic #7) -->
+            <div class="search-bar">
+              <i class="ri-search-line"></i>
+              <input type="text" id="searchFilter" placeholder="Pesquisar chamado..." oninput="applyFilters()">
+            </div>
 
-          <!-- Priority filter -->
-          <select class="filter-select" id="priorityFilter" onchange="applyFilters()">
-            <option value="">Todas Prioridades</option>
-            <option value="high">Alta</option>
-            <option value="medium">Média</option>
-            <option value="low">Baixa</option>
-          </select>
+            <!-- Category filter -->
+            <select class="filter-select" id="categoryFilter" onchange="applyFilters()">
+              <option value="">Todas Categorias</option>
+              <option value="hardware">Hardware</option>
+              <option value="software">Software</option>
+              <option value="network">Rede</option>
+              <option value="other">Outros</option>
+            </select>
 
-          <!-- Action Button (Conditional based on role, handled in JS) -->
-          <button class="btn btn-new-ticket" id="btnOpenCreateModal" onclick="openCreateModal()">
-            Novo Chamado <i class="ri-add-line"></i>
-          </button>
+            <!-- Priority filter -->
+            <select class="filter-select" id="priorityFilter" onchange="applyFilters()">
+              <option value="">Todas Prioridades</option>
+              <option value="high">Alta</option>
+              <option value="medium">Média</option>
+              <option value="low">Baixa</option>
+            </select>
+
+            <!-- Action Button (Conditional based on role, handled in JS) -->
+            <button class="btn btn-new-ticket" id="btnOpenCreateModal" onclick="openCreateModal()">
+              Novo Chamado <i class="ri-add-line"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- Feedback Banner for Role Action constraints -->
+        <div id="roleAlertBanner" class="alert alert-success" style="display: none; margin-bottom: 24px;">
+          <i class="ri-information-line"></i>
+          <span id="roleAlertText">Você está conectado.</span>
         </div>
-      </section>
 
-      <!-- Feedback Banner for Role Action constraints -->
-      <div id="roleAlertBanner" class="alert alert-success" style="display: none; margin-bottom: 24px;">
-        <i class="ri-information-line"></i>
-        <span id="roleAlertText">Você está conectado.</span>
+        <!-- The Kanban Board Grid -->
+        <section class="kanban-board" id="kanbanBoard">
+          
+          <!-- COLUMN: TODO -->
+          <div class="kanban-column column-todo" data-status="todo" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+            <div class="column-header">
+              <div class="column-title-group">
+                <span class="column-indicator"></span>
+                <h3 class="column-title">Pendentes</h3>
+              </div>
+              <span class="column-count" id="count-todo">0</span>
+            </div>
+            <div class="column-cards-container" id="container-todo">
+              <!-- Cards injected by JS -->
+            </div>
+          </div>
+
+          <!-- COLUMN: IN PROGRESS -->
+          <div class="kanban-column column-progress" data-status="in_progress" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+            <div class="column-header">
+              <div class="column-title-group">
+                <span class="column-indicator"></span>
+                <h3 class="column-title">Em Atendimento</h3>
+              </div>
+              <span class="column-count" id="count-in_progress">0</span>
+            </div>
+            <div class="column-cards-container" id="container-in_progress">
+              <!-- Cards injected by JS -->
+            </div>
+          </div>
+
+          <!-- COLUMN: REVIEW -->
+          <div class="kanban-column column-review" data-status="review" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+            <div class="column-header">
+              <div class="column-title-group">
+                <span class="column-indicator"></span>
+                <h3 class="column-title">Em Revisão</h3>
+              </div>
+              <span class="column-count" id="count-review">0</span>
+            </div>
+            <div class="column-cards-container" id="container-review">
+              <!-- Cards injected by JS -->
+            </div>
+          </div>
+
+          <!-- COLUMN: DONE -->
+          <div class="kanban-column column-done" data-status="done" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+            <div class="column-header">
+              <div class="column-title-group">
+                <span class="column-indicator"></span>
+                <h3 class="column-title">Concluídos</h3>
+              </div>
+              <span class="column-count" id="count-done">0</span>
+            </div>
+            <div class="column-cards-container" id="container-done">
+              <!-- Cards injected by JS -->
+            </div>
+          </div>
+
+        </section>
       </div>
 
-      <!-- The Kanban Board Grid -->
-      <section class="kanban-board" id="kanbanBoard">
-        
-        <!-- COLUMN: TODO -->
-        <div class="kanban-column column-todo" data-status="todo" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
-          <div class="column-header">
-            <div class="column-title-group">
-              <span class="column-indicator"></span>
-              <h3 class="column-title">Pendentes</h3>
-            </div>
-            <span class="column-count" id="count-todo">0</span>
+      <!-- ABA 2: ESTATÍSTICAS & RELATÓRIOS -->
+      <div id="tab-stats" class="tab-content">
+        <section class="board-header">
+          <div class="board-title">
+            <h2>Estatísticas e Métricas</h2>
+            <p>Monitore a eficiência e distribuição dos chamados de TI</p>
           </div>
-          <div class="column-cards-container" id="container-todo">
-            <!-- Cards injected by JS -->
+        </section>
+
+        <!-- Painel de Métricas -->
+        <section class="metrics-panel" id="metricsPanel">
+          <!-- Metric Card 1: Total -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Total de Chamados</span>
+              <i class="ri-ticket-2-line metric-icon"></i>
+            </div>
+            <span class="metric-value" id="metricTotal">0</span>
+            <div class="metric-footer">
+              <i class="ri-information-line"></i> Todos incidentes na base
+            </div>
+          </div>
+
+          <!-- Metric Card 2: Resolvidos -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Taxa de Resolução</span>
+              <i class="ri-checkbox-circle-line metric-icon" style="color: #10b981;"></i>
+            </div>
+            <span class="metric-value" id="metricResolvedPercent">0%</span>
+            <div class="metric-footer">
+              <i class="ri-arrow-up-line" style="color: #10b981;"></i> <span id="metricResolvedCount">0</span> resolvidos
+            </div>
+          </div>
+
+          <!-- Metric Card 3: SLA Crítico -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Chamados Críticos</span>
+              <i class="ri-error-warning-line metric-icon" style="color: #ef4444;"></i>
+            </div>
+            <span class="metric-value" id="metricCritical">0</span>
+            <div class="metric-footer">
+              <i class="ri-alert-line" style="color: #ef4444;"></i> Prioridade Alta pendente
+            </div>
+          </div>
+
+          <!-- Metric Card 4: Categorias -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Distribuição por Categoria</span>
+              <i class="ri-pie-chart-line metric-icon" style="color: #64748b;"></i>
+            </div>
+            <div class="category-progress-container" id="categoryDistributionContainer">
+              <!-- Injetado por JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Métricas Expandidas (Visualização Distribuída) -->
+        <div class="stats-grid-row">
+          <!-- Card de Prioridades -->
+          <div class="stats-card-expanded">
+            <h3><i class="ri-alert-line" style="color: var(--color-warning);"></i> Volume por Prioridade</h3>
+            <div id="statsPriorityDistribution" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+              <!-- Injetado por JS -->
+            </div>
+          </div>
+
+          <!-- Card de Chamados por Status -->
+          <div class="stats-card-expanded">
+            <h3><i class="ri-refresh-line" style="color: var(--color-primary);"></i> Volume por Status</h3>
+            <div id="statsStatusDistribution" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+              <!-- Injetado por JS -->
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- COLUMN: IN PROGRESS -->
-        <div class="kanban-column column-progress" data-status="in_progress" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
-          <div class="column-header">
-            <div class="column-title-group">
-              <span class="column-indicator"></span>
-              <h3 class="column-title">Em Atendimento</h3>
-            </div>
-            <span class="column-count" id="count-in_progress">0</span>
+      <!-- ABA 3: HISTÓRICO GERAL DE TI -->
+      <div id="tab-logs" class="tab-content">
+        <section class="board-header">
+          <div class="board-title">
+            <h2>Histórico Geral de TI</h2>
+            <p>Linha do tempo das últimas 50 ações realizadas no sistema</p>
           </div>
-          <div class="column-cards-container" id="container-in_progress">
-            <!-- Cards injected by JS -->
-          </div>
+          <button class="btn btn-secondary" style="width: auto;" onclick="loadGlobalActivities()" title="Atualizar Histórico">
+            <i class="ri-refresh-line"></i> Atualizar Feed
+          </button>
+        </section>
+
+        <!-- Timeline Geral -->
+        <div class="global-timeline" id="globalActivitiesTimeline" style="margin-top: 20px;">
+          <!-- Injetado por JS -->
         </div>
+      </div>
 
-        <!-- COLUMN: REVIEW -->
-        <div class="kanban-column column-review" data-status="review" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
-          <div class="column-header">
-            <div class="column-title-group">
-              <span class="column-indicator"></span>
-              <h3 class="column-title">Em Revisão</h3>
-            </div>
-            <span class="column-count" id="count-review">0</span>
-          </div>
-          <div class="column-cards-container" id="container-review">
-            <!-- Cards injected by JS -->
-          </div>
-        </div>
-
-        <!-- COLUMN: DONE -->
-        <div class="kanban-column column-done" data-status="done" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
-          <div class="column-header">
-            <div class="column-title-group">
-              <span class="column-indicator"></span>
-              <h3 class="column-title">Concluídos</h3>
-            </div>
-            <span class="column-count" id="count-done">0</span>
-          </div>
-          <div class="column-cards-container" id="container-done">
-            <!-- Cards injected by JS -->
-          </div>
-        </div>
-
-      </section>
     </main>
   </div>
 
@@ -218,7 +336,7 @@
        MODAL: TICKET DETAILS (VIEW / EDIT / DELETE)
        ========================================== -->
   <div class="modal-overlay" id="detailsModal">
-    <div class="modal-content">
+    <div class="modal-content modal-expanded">
       <div class="modal-header">
         <h3 class="modal-title" id="detailModalTitle">Detalhes do Chamado</h3>
         <button class="modal-close" onclick="closeModal('detailsModal')">
@@ -226,49 +344,97 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="ticket-details-info">
-          
-          <div class="detail-row">
-            <span class="detail-label">Status</span>
-            <div class="detail-value" id="detailStatus">Carregando...</div>
-          </div>
+        <div class="modal-grid">
+          <!-- Left Column (Description, Subtasks, Comments) -->
+          <div class="modal-left-col">
+            <!-- Description -->
+            <div class="form-group" style="margin-bottom: 20px;">
+              <span class="form-label" style="font-weight: 700; margin-bottom: 8px;">Descrição do Problema</span>
+              <div class="detail-value description" id="detailDescription" style="background: var(--color-neutral-bg); border: 1px solid var(--color-neutral-border); padding: 12px; border-radius: var(--radius-md); font-size: 0.82rem;">Carregando...</div>
+            </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Prioridade</span>
-            <div class="detail-value" id="detailPriority">Carregando...</div>
-          </div>
+            <!-- Subtasks Checklist -->
+            <div class="subtasks-section">
+              <span class="modal-section-title">
+                <i class="ri-checkbox-multiple-line"></i> Subtarefas / Checklist
+              </span>
+              <div class="subtasks-list" id="subtasksList">
+                <!-- Injected by JS -->
+              </div>
+              <!-- Form to add subtask, visible only for techs (handled in JS) -->
+              <form class="add-subtask-form" id="addSubtaskForm" onsubmit="handleAddSubtask(event)" style="display: none;">
+                <input type="text" id="newSubtaskTitle" placeholder="Adicionar nova subtarefa..." maxlength="255" required>
+                <button type="submit" class="btn btn-success">Adicionar</button>
+              </form>
+            </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Categoria</span>
-            <div class="detail-value" id="detailCategory">Carregando...</div>
-          </div>
-
-          <div class="detail-row">
-            <span class="detail-label">Criado por</span>
-            <div class="detail-value" id="detailCreator">Carregando...</div>
-          </div>
-
-          <!-- Dynamic Assignee selector (Nielsen Heuristic #3 & #6) -->
-          <div class="detail-row">
-            <span class="detail-label">Atribuído a</span>
-            <div class="detail-value">
-              <span id="detailAssigneeName" style="margin-right: 10px;">Carregando...</span>
-              <select class="filter-select" id="detailAssigneeSelect" style="display: none; padding: 4px 24px 4px 8px; font-size: 0.8rem;" onchange="handleAssigneeChange(event)">
-                <option value="">Não atribuído</option>
-              </select>
+            <!-- Comments Section -->
+            <div class="comments-section">
+              <span class="modal-section-title">
+                <i class="ri-chat-3-line"></i> Central de Discussão
+              </span>
+              <div class="comments-list" id="commentsList">
+                <!-- Injected by JS -->
+              </div>
+              <form class="add-comment-form" onsubmit="handleAddComment(event)">
+                <textarea id="newCommentContent" placeholder="Escreva uma mensagem ou solicite informações..." maxlength="1000" oninput="updateCommentCharCount()" required></textarea>
+                <div class="add-comment-footer">
+                  <span id="commentCharCount" style="font-size: 0.7rem; color: var(--text-muted);">0 / 1000</span>
+                  <button type="submit" class="btn btn-primary" id="btnSubmitComment">Enviar Mensagem</button>
+                </div>
+              </form>
             </div>
           </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Criado em</span>
-            <div class="detail-value" id="detailDate">Carregando...</div>
-          </div>
+          <!-- Right Column (Metadata, SLA, Timeline) -->
+          <div class="modal-right-col">
+            <span class="modal-section-title">
+              <i class="ri-information-line"></i> Detalhes & SLA
+            </span>
+            <div class="ticket-details-info" style="gap: 10px; margin-bottom: 20px;">
+              <div class="detail-row">
+                <span class="detail-label">Status</span>
+                <div class="detail-value" id="detailStatus">Carregando...</div>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Prioridade</span>
+                <div class="detail-value" id="detailPriority">Carregando...</div>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">SLA Limite</span>
+                <div class="detail-value" id="detailSlaStatus">Carregando...</div>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Categoria</span>
+                <div class="detail-value" id="detailCategory">Carregando...</div>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Criado por</span>
+                <div class="detail-value" id="detailCreator">Carregando...</div>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Atribuído a</span>
+                <div class="detail-value" style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+                  <span id="detailAssigneeName">Carregando...</span>
+                  <select class="filter-select" id="detailAssigneeSelect" style="display: none; padding: 4px 24px 4px 8px; font-size: 0.8rem; width: 100%;" onchange="handleAssigneeChange(event)">
+                    <option value="">Não atribuído</option>
+                  </select>
+                </div>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Abertura</span>
+                <div class="detail-value" id="detailDate">Carregando...</div>
+              </div>
+            </div>
 
-          <div class="detail-row" style="flex-direction: column; gap: 8px;">
-            <span class="detail-label">Descrição</span>
-            <div class="detail-value description" id="detailDescription">Carregando...</div>
+            <!-- Activity Log Timeline -->
+            <span class="modal-section-title">
+              <i class="ri-history-line"></i> Histórico de Ações
+            </span>
+            <div class="timeline-container" id="activitiesTimeline">
+              <!-- Injected by JS -->
+            </div>
           </div>
-
         </div>
       </div>
       <div class="modal-footer" style="justify-content: space-between;">
